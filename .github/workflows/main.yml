@@ -1,137 +1,116 @@
 name: Build TyraCraft PS2
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Mengambil isi repository GitHub
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Mengecek ZIP
-      - name: Check ZIP
+      - name: Extract TyraCraft source
         run: |
-          echo "==== CHECK ZIP ===="
+          set -e
 
-          if [ ! -f "tyracraft-master.zip" ]; then
-            echo "ERROR: tyracraft-master.zip tidak ditemukan!"
-            exit 1
-          fi
-
-          echo "ZIP ditemukan!"
-          ls -lh tyracraft-master.zip
-
-          echo ""
-          echo "Isi awal ZIP:"
-          unzip -l tyracraft-master.zip | head -100
-
-      # Mengekstrak source
-      - name: Extract source
-        run: |
-          echo "==== EXTRACTING SOURCE ===="
-
-          rm -rf tyracraft-master
           unzip -q tyracraft-master.zip
 
-          echo "==== EXTRACT SUCCESS ===="
-          ls -la
+          echo "=== TyraCraft ==="
+          ls -la tyracraft-master
 
-      # Mengecek isi folder proyek
-      - name: Check project files
+      - name: Clone Tyra Engine
         run: |
-          echo "==== PROJECT FILES ===="
+          set -e
 
-          if [ ! -d "tyracraft-master" ]; then
-            echo "ERROR: Folder tyracraft-master tidak ditemukan!"
+          git clone --depth 1 https://github.com/h4570/tyra.git "$GITHUB_WORKSPACE/tyra"
+
+          echo "=== Tyra ==="
+          ls -la "$GITHUB_WORKSPACE/tyra"
+          ls -la "$GITHUB_WORKSPACE/tyra/engine"
+
+      - name: Install Tyra at /tyra
+        run: |
+          set -e
+
+          sudo ln -s "$GITHUB_WORKSPACE/tyra" /tyra
+
+          echo "=== CHECK /tyra ==="
+          ls -la /tyra
+          test -f /tyra/Makefile.base
+          test -f /tyra/engine/Makefile
+
+      - name: Install PS2DEV
+        run: |
+          set -e
+
+          wget -O /tmp/ps2dev.tar.gz \
+            https://github.com/ps2dev/ps2dev/releases/download/latest/ps2dev-ubuntu-latest.tar.gz
+
+          mkdir -p "$HOME/ps2dev"
+          tar -xzf /tmp/ps2dev.tar.gz -C "$HOME/ps2dev"
+
+          COMPILER=$(find "$HOME/ps2dev" \
+            -type f \
+            -name "mips64r5900el-ps2-elf-g++" \
+            -print -quit)
+
+          if [ -z "$COMPILER" ]; then
+            echo "ERROR: PS2 compiler tidak ditemukan!"
             exit 1
           fi
 
-          cd tyracraft-master
+          PS2_ROOT=$(dirname "$(dirname "$COMPILER")")
 
-          echo "Lokasi saat ini:"
-          pwd
+          echo "PS2DEV=$PS2_ROOT" >> "$GITHUB_ENV"
+          echo "PS2SDK=$PS2_ROOT/ps2sdk" >> "$GITHUB_ENV"
+          echo "$PS2_ROOT/bin" >> "$GITHUB_PATH"
 
-          echo ""
-          echo "Isi folder:"
-          ls -la
-
-          echo ""
-          echo "Mencari Makefile:"
-          find . -maxdepth 2 -iname "Makefile*" -type f
-
-      # Memeriksa konfigurasi build terlebih dahulu
-      - name: Check build configuration
+      - name: Verify PS2 compiler
         run: |
-          echo "==== CHECK BUILD CONFIGURATION ===="
+          set -e
 
-          cd tyracraft-master
+          echo "PS2DEV=$PS2DEV"
+          echo "PS2SDK=$PS2SDK"
 
-          echo "==== Makefile ===="
-          head -100 Makefile || true
+          which mips64r5900el-ps2-elf-g++
+          mips64r5900el-ps2-elf-g++ --version
 
-          echo ""
-          echo "==== Makefile.base ===="
-          head -100 Makefile.base || true
-
-          echo ""
-          echo "==== Available make targets ===="
-          make -qp 2>/dev/null | \
-            awk -F':' '/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {print $1}' | \
-            sort -u | head -100 || true
-
-      # Build proyek
-      - name: Build project
+      - name: Build Tyra Engine
         run: |
-          echo "==== STARTING BUILD ===="
+          set -e
 
-          cd tyracraft-master
+          cd /tyra/engine
 
-          echo "Current directory:"
-          pwd
+          echo "=== BUILD TYRA ENGINE ==="
+          make
 
-          echo ""
-          echo "Checking required files:"
-          ls -la Makefile Makefile.base
-
-          echo ""
-          echo "==== BUILD ENGINE ===="
-          make rebuild-engine
-
-          echo ""
-          echo "==== BUILD GAME ===="
-          make rebuild
-
-          echo ""
-          echo "==== BUILD FINISHED ===="
-
-      # Menampilkan hasil build
-      - name: Check build output
-        if: always()
+      - name: Build TyraCraft
         run: |
-          echo "==== CHECKING BUILD OUTPUT ===="
+          set -e
 
-          cd tyracraft-master
+          cd "$GITHUB_WORKSPACE/tyracraft-master"
 
-          echo "Mencari file hasil build:"
-          find . -type f \
-            \( -iname "*.elf" -o -iname "*.iso" -o -iname "*.bin" \) \
-            2>/dev/null || true
+          echo "=== BUILD TYRACRAFT ==="
+          make clean || true
+          make
 
-      # Mengunggah hasil build jika ada
-      - name: Upload build artifacts
-        if: success()
+      - name: Find ELF
+        run: |
+          echo "=== ELF OUTPUT ==="
+
+          find "$GITHUB_WORKSPACE" \
+            -type f \
+            -iname "*.elf" \
+            -print
+
+      - name: Upload ELF
         uses: actions/upload-artifact@v4
         with:
-          name: TyraCraft-PS2-Build
-          path: |
-            tyracraft-master/**/*.elf
-            tyracraft-master/**/*.iso
-            tyracraft-master/**/*.bin
-          if-no-files-found: warn
+          name: TyraCraft-PS2-ELF
+          path: tyracraft-master/bin/*.elf
+          if-no-files-found: error
