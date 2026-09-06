@@ -1,10 +1,10 @@
 name: Build TyraCraft PS2
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,103 +14,149 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract TyraCraft source
+      - name: Install dependencies
         run: |
-          set -e
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            make \
+            unzip \
+            zip \
+            wget \
+            git
 
-          unzip -q tyracraft-master.zip
-
-          echo "=== TyraCraft ==="
-          ls -la tyracraft-master
-
-      - name: Clone Tyra Engine
+      - name: Check project files
         run: |
-          set -e
+          echo "==== PROJECT FILES ===="
+          echo "Current directory:"
+          pwd
 
-          git clone --depth 1 https://github.com/h4570/tyra.git "$GITHUB_WORKSPACE/tyra"
+          echo ""
+          echo "Repository contents:"
+          ls -la
 
-          echo "=== Tyra ==="
-          ls -la "$GITHUB_WORKSPACE/tyra"
-          ls -la "$GITHUB_WORKSPACE/tyra/engine"
+          echo ""
+          echo "Searching for ZIP files:"
+          find . -maxdepth 3 -type f -iname "*.zip" -print
 
-      - name: Install Tyra at /tyra
+          echo ""
+          echo "Searching for Makefiles:"
+          find . -type f \( -name "Makefile" -o -name "makefile" \) -print
+
+      - name: Extract source
         run: |
-          set -e
+          echo "==== EXTRACTING SOURCE ===="
 
-          sudo ln -s "$GITHUB_WORKSPACE/tyra" /tyra
+          mkdir -p extracted
 
-          echo "=== CHECK /tyra ==="
-          ls -la /tyra
-          test -f /tyra/Makefile.base
-          test -f /tyra/engine/Makefile
+          ZIP_FILE=$(find . -maxdepth 3 -type f -iname "*.zip" | head -n 1)
 
-      - name: Install PS2DEV
-        run: |
-          set -e
-
-          wget -O /tmp/ps2dev.tar.gz \
-            https://github.com/ps2dev/ps2dev/releases/download/latest/ps2dev-ubuntu-latest.tar.gz
-
-          mkdir -p "$HOME/ps2dev"
-          tar -xzf /tmp/ps2dev.tar.gz -C "$HOME/ps2dev"
-
-          COMPILER=$(find "$HOME/ps2dev" \
-            -type f \
-            -name "mips64r5900el-ps2-elf-g++" \
-            -print -quit)
-
-          if [ -z "$COMPILER" ]; then
-            echo "ERROR: PS2 compiler tidak ditemukan!"
+          if [ -z "$ZIP_FILE" ]; then
+            echo "ERROR: ZIP file tidak ditemukan."
             exit 1
           fi
 
-          PS2_ROOT=$(dirname "$(dirname "$COMPILER")")
+          echo "ZIP ditemukan:"
+          echo "$ZIP_FILE"
 
-          echo "PS2DEV=$PS2_ROOT" >> "$GITHUB_ENV"
-          echo "PS2SDK=$PS2_ROOT/ps2sdk" >> "$GITHUB_ENV"
-          echo "$PS2_ROOT/bin" >> "$GITHUB_PATH"
+          echo ""
+          echo "Isi ZIP:"
+          unzip -l "$ZIP_FILE" | head -n 100
 
-      - name: Verify PS2 compiler
+          echo ""
+          echo "Mengekstrak..."
+          unzip -q "$ZIP_FILE" -d extracted
+
+          echo ""
+          echo "Hasil ekstraksi:"
+          find extracted -maxdepth 3 -type f | head -n 100
+
+      - name: Find project directory
+        id: project
         run: |
-          set -e
+          echo "==== FINDING PROJECT ===="
 
-          echo "PS2DEV=$PS2DEV"
-          echo "PS2SDK=$PS2SDK"
+          MAKEFILE=$(find extracted -type f -name "Makefile" | head -n 1)
 
-          which mips64r5900el-ps2-elf-g++
-          mips64r5900el-ps2-elf-g++ --version
+          if [ -z "$MAKEFILE" ]; then
+            echo "ERROR: Makefile tidak ditemukan setelah ekstraksi."
+            exit 1
+          fi
 
-      - name: Build Tyra Engine
+          PROJECT_DIR=$(dirname "$MAKEFILE")
+
+          echo "Makefile ditemukan:"
+          echo "$MAKEFILE"
+
+          echo ""
+          echo "Project directory:"
+          echo "$PROJECT_DIR"
+
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+
+          echo ""
+          echo "Isi folder project:"
+          ls -la "$PROJECT_DIR"
+
+      - name: Check build configuration
         run: |
-          set -e
+          echo "==== CHECK BUILD CONFIGURATION ===="
 
-          cd /tyra/engine
+          cd "$PROJECT_DIR"
 
-          echo "=== BUILD TYRA ENGINE ==="
+          echo "Current directory:"
+          pwd
+
+          echo ""
+          echo "Makefile:"
+          ls -la Makefile
+
+          echo ""
+          echo "Mencari Makefile.base:"
+          find . -name "Makefile.base" -print
+
+          echo ""
+          echo "Isi bagian awal Makefile:"
+          head -n 100 Makefile
+
+      - name: Build project
+        run: |
+          echo "==== STARTING BUILD ===="
+
+          cd "$PROJECT_DIR"
+
+          echo "Building from:"
+          pwd
+
+          echo ""
+          echo "Running make..."
+
           make
 
-      - name: Build TyraCraft
+      - name: Check build output
+        if: always()
         run: |
-          set -e
+          echo "==== CHECKING BUILD OUTPUT ===="
 
-          cd "$GITHUB_WORKSPACE/tyracraft-master"
+          if [ -n "${PROJECT_DIR:-}" ] && [ -d "$PROJECT_DIR" ]; then
+            cd "$PROJECT_DIR"
 
-          echo "=== BUILD TYRACRAFT ==="
-          make clean || true
-          make
+            echo "Project contents after build:"
+            find . -maxdepth 4 -type f | sort | head -n 200
+          else
+            echo "Project directory tidak tersedia."
+          fi
 
-      - name: Find ELF
-        run: |
-          echo "=== ELF OUTPUT ==="
-
-          find "$GITHUB_WORKSPACE" \
-            -type f \
-            -iname "*.elf" \
-            -print
-
-      - name: Upload ELF
+      - name: Upload build artifacts
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: TyraCraft-PS2-ELF
-          path: tyracraft-master/bin/*.elf
-          if-no-files-found: error
+          name: TyraCraft-PS2-build
+          path: |
+            extracted/**/*.elf
+            extracted/**/*.ELF
+            extracted/**/*.irx
+            extracted/**/*.IRX
+            extracted/**/*.iso
+            extracted/**/*.ISO
+          if-no-files-found: warn
