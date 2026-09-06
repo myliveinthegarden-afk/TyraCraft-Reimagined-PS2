@@ -1,6 +1,9 @@
 name: Build TyraCraft PS2
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -8,9 +11,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Mengambil isi repository GitHub
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Mengecek ZIP
+      - name: Check ZIP
+        run: |
+          echo "==== CHECK ZIP ===="
+
+          if [ ! -f "tyracraft-master.zip" ]; then
+            echo "ERROR: tyracraft-master.zip tidak ditemukan!"
+            exit 1
+          fi
+
+          echo "ZIP ditemukan!"
+          ls -lh tyracraft-master.zip
+
+          echo ""
+          echo "Isi awal ZIP:"
+          unzip -l tyracraft-master.zip | head -100
+
+      # Mengekstrak source
       - name: Extract source
         run: |
           echo "==== EXTRACTING SOURCE ===="
@@ -18,28 +40,98 @@ jobs:
           rm -rf tyracraft-master
           unzip -q tyracraft-master.zip
 
-          echo "==== SOURCE EXTRACTED ===="
+          echo "==== EXTRACT SUCCESS ===="
           ls -la
 
+      # Mengecek isi folder proyek
       - name: Check project files
         run: |
           echo "==== PROJECT FILES ===="
-          cd tyracraft-master
 
-          ls -la
-
-          echo "==== MAKEFILE ===="
-          ls -la Makefile
-
-      - name: Build project
-        run: |
-          cd tyracraft-master
-
-          echo "==== STARTING BUILD ===="
-
-          if [ -f Makefile ]; then
-            make
-          else
-            echo "ERROR: Makefile tidak ditemukan!"
+          if [ ! -d "tyracraft-master" ]; then
+            echo "ERROR: Folder tyracraft-master tidak ditemukan!"
             exit 1
           fi
+
+          cd tyracraft-master
+
+          echo "Lokasi saat ini:"
+          pwd
+
+          echo ""
+          echo "Isi folder:"
+          ls -la
+
+          echo ""
+          echo "Mencari Makefile:"
+          find . -maxdepth 2 -iname "Makefile*" -type f
+
+      # Memeriksa konfigurasi build terlebih dahulu
+      - name: Check build configuration
+        run: |
+          echo "==== CHECK BUILD CONFIGURATION ===="
+
+          cd tyracraft-master
+
+          echo "==== Makefile ===="
+          head -100 Makefile || true
+
+          echo ""
+          echo "==== Makefile.base ===="
+          head -100 Makefile.base || true
+
+          echo ""
+          echo "==== Available make targets ===="
+          make -qp 2>/dev/null | \
+            awk -F':' '/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {print $1}' | \
+            sort -u | head -100 || true
+
+      # Build proyek
+      - name: Build project
+        run: |
+          echo "==== STARTING BUILD ===="
+
+          cd tyracraft-master
+
+          echo "Current directory:"
+          pwd
+
+          echo ""
+          echo "Checking required files:"
+          ls -la Makefile Makefile.base
+
+          echo ""
+          echo "==== BUILD ENGINE ===="
+          make rebuild-engine
+
+          echo ""
+          echo "==== BUILD GAME ===="
+          make rebuild
+
+          echo ""
+          echo "==== BUILD FINISHED ===="
+
+      # Menampilkan hasil build
+      - name: Check build output
+        if: always()
+        run: |
+          echo "==== CHECKING BUILD OUTPUT ===="
+
+          cd tyracraft-master
+
+          echo "Mencari file hasil build:"
+          find . -type f \
+            \( -iname "*.elf" -o -iname "*.iso" -o -iname "*.bin" \) \
+            2>/dev/null || true
+
+      # Mengunggah hasil build jika ada
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TyraCraft-PS2-Build
+          path: |
+            tyracraft-master/**/*.elf
+            tyracraft-master/**/*.iso
+            tyracraft-master/**/*.bin
+          if-no-files-found: warn
