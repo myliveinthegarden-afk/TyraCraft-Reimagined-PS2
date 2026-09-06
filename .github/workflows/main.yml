@@ -1,54 +1,44 @@
-name: Check TyraCraft Source
+name: Build TyraCraft PS2
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show repository files
-        run: |
-          echo "==== REPOSITORY ===="
-          ls -lah
-
-      - name: Check ZIP
-        run: |
-          echo "==== CHECK ZIP ===="
-
-          if [ ! -f "tyracraft-master.zip" ]; then
-            echo "ERROR: tyracraft-master.zip tidak ditemukan!"
-            exit 1
-          fi
-
-          echo "ZIP ditemukan!"
-          unzip -l tyracraft-master.zip | head -50
-
       - name: Extract source
         run: |
-          echo "==== EXTRACTING ===="
+          echo "==== EXTRACTING SOURCE ===="
+
+          rm -rf tyracraft-master
           unzip -q tyracraft-master.zip
 
-          echo "==== HASIL EXTRACT ===="
-          ls -lah
-          ls -lah tyracraft-master
+          echo "==== SOURCE EXTRACTED ===="
+          ls -la
 
-      - name: Check Makefile
+      - name: Check project files
         run: |
-          echo "==== CHECK MAKEFILE ===="
+          echo "==== PROJECT FILES ===="
+          cd tyracraft-master
 
-          if [ -f "tyracraft-master/Makefile" ]; then
-            echo "SUCCESS: Makefile ditemukan!"
-            echo ""
-            echo "Lokasi:"
-            echo "tyracraft-master/Makefile"
+          ls -la
+
+          echo "==== MAKEFILE ===="
+          ls -la Makefile
+
+      - name: Build project
+        run: |
+          cd tyracraft-master
+
+          echo "==== STARTING BUILD ===="
+
+          if [ -f Makefile ]; then
+            make
           else
             echo "ERROR: Makefile tidak ditemukan!"
             exit 1
