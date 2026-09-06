@@ -1,0 +1,45 @@
+name: Build TyraCraft PS2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract source
+        run: |
+          echo "==== EXTRACTING SOURCE ===="
+
+          rm -rf tyracraft-master
+          unzip -q tyracraft-master.zip
+
+          echo "==== SOURCE EXTRACTED ===="
+          ls -la
+
+      - name: Check project files
+        run: |
+          echo "==== PROJECT FILES ===="
+          cd tyracraft-master
+
+          ls -la
+
+          echo "==== MAKEFILE ===="
+          ls -la Makefile
+
+      - name: Build project
+        run: |
+          cd tyracraft-master
+
+          echo "==== STARTING BUILD ===="
+
+          if [ -f Makefile ]; then
+            make
+          else
+            echo "ERROR: Makefile tidak ditemukan!"
+            exit 1
+          fi
