@@ -1,4 +1,4 @@
-name: Build TyraCraft PS2
+name: Check TyraCraft ZIP
 
 on:
   push:
@@ -7,26 +7,36 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  check-zip:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show project files
+      - name: Show repository files
         run: |
-          echo "=== PROJECT FILES ==="
-          ls -la
-          echo ""
-          echo "=== ALL FILES ==="
-          find . -maxdepth 3 -type f | sort
+          echo "==== FILE DI REPOSITORY ===="
+          ls -lah
 
-      - name: Build project
+      - name: Check ZIP file
         run: |
-          if [ -f Makefile ]; then
-            make
-          else
-            echo "Makefile tidak ditemukan!"
+          echo "==== MENCARI FILE ZIP ===="
+          
+          ZIP_FILE=$(find . -maxdepth 2 -type f -iname "*.zip" | head -n 1)
+
+          if [ -z "$ZIP_FILE" ]; then
+            echo "ERROR: File ZIP tidak ditemukan!"
             exit 1
           fi
+
+          echo "ZIP ditemukan:"
+          echo "$ZIP_FILE"
+
+          echo ""
+          echo "==== ISI FILE ZIP ===="
+          unzip -l "$ZIP_FILE"
+
+      - name: Finish
+        run: |
+          echo "==== PEMERIKSAAN SELESAI ===="
