@@ -1,0 +1,32 @@
+name: Build TyraCraft PS2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show project files
+        run: |
+          echo "=== PROJECT FILES ==="
+          ls -la
+          echo ""
+          echo "=== ALL FILES ==="
+          find . -maxdepth 3 -type f | sort
+
+      - name: Build project
+        run: |
+          if [ -f Makefile ]; then
+            make
+          else
+            echo "Makefile tidak ditemukan!"
+            exit 1
+          fi
