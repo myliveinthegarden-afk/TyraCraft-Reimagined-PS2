@@ -1,4 +1,4 @@
-name: Check TyraCraft ZIP
+name: Check TyraCraft Source
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-zip:
+  check:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,27 +16,40 @@ jobs:
 
       - name: Show repository files
         run: |
-          echo "==== FILE DI REPOSITORY ===="
+          echo "==== REPOSITORY ===="
           ls -lah
 
-      - name: Check ZIP file
+      - name: Check ZIP
         run: |
-          echo "==== MENCARI FILE ZIP ===="
-          
-          ZIP_FILE=$(find . -maxdepth 2 -type f -iname "*.zip" | head -n 1)
+          echo "==== CHECK ZIP ===="
 
-          if [ -z "$ZIP_FILE" ]; then
-            echo "ERROR: File ZIP tidak ditemukan!"
+          if [ ! -f "tyracraft-master.zip" ]; then
+            echo "ERROR: tyracraft-master.zip tidak ditemukan!"
             exit 1
           fi
 
-          echo "ZIP ditemukan:"
-          echo "$ZIP_FILE"
+          echo "ZIP ditemukan!"
+          unzip -l tyracraft-master.zip | head -50
 
-          echo ""
-          echo "==== ISI FILE ZIP ===="
-          unzip -l "$ZIP_FILE"
-
-      - name: Finish
+      - name: Extract source
         run: |
-          echo "==== PEMERIKSAAN SELESAI ===="
+          echo "==== EXTRACTING ===="
+          unzip -q tyracraft-master.zip
+
+          echo "==== HASIL EXTRACT ===="
+          ls -lah
+          ls -lah tyracraft-master
+
+      - name: Check Makefile
+        run: |
+          echo "==== CHECK MAKEFILE ===="
+
+          if [ -f "tyracraft-master/Makefile" ]; then
+            echo "SUCCESS: Makefile ditemukan!"
+            echo ""
+            echo "Lokasi:"
+            echo "tyracraft-master/Makefile"
+          else
+            echo "ERROR: Makefile tidak ditemukan!"
+            exit 1
+          fi
