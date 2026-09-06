@@ -11,9 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ==============================
+      # CHECKOUT
+      # ==============================
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ==============================
+      # INSTALL BASIC DEPENDENCIES
+      # ==============================
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -22,64 +28,105 @@ jobs:
             make \
             unzip \
             zip \
-            wget \
-            git
+            git \
+            wget
 
-      - name: Check project files
+      # ==============================
+      # CHECK FILES
+      # ==============================
+      - name: Check uploaded files
         run: |
-          echo "==== PROJECT FILES ===="
-          echo "Current directory:"
+          echo "==== REPOSITORY FILES ===="
           pwd
+          ls -lah
 
           echo ""
-          echo "Repository contents:"
-          ls -la
+          echo "==== ZIP FILES ===="
+          find . -maxdepth 2 -type f -iname "*.zip" -print
 
-          echo ""
-          echo "Searching for ZIP files:"
-          find . -maxdepth 3 -type f -iname "*.zip" -print
-
-          echo ""
-          echo "Searching for Makefiles:"
-          find . -type f \( -name "Makefile" -o -name "makefile" \) -print
-
-      - name: Extract source
+      # ==============================
+      # EXTRACT TYRA MASTER
+      # ==============================
+      - name: Extract Tyra Master
         run: |
-          echo "==== EXTRACTING SOURCE ===="
+          echo "==== EXTRACTING TYRA MASTER ===="
 
-          mkdir -p extracted
+          rm -rf tyra-source
+          mkdir -p tyra-source
 
-          ZIP_FILE=$(find . -maxdepth 3 -type f -iname "*.zip" | head -n 1)
-
-          if [ -z "$ZIP_FILE" ]; then
-            echo "ERROR: ZIP file tidak ditemukan."
+          if [ ! -f "tyra-master.zip" ]; then
+            echo "ERROR: tyra-master.zip tidak ditemukan!"
             exit 1
           fi
 
-          echo "ZIP ditemukan:"
-          echo "$ZIP_FILE"
+          unzip -q tyra-master.zip -d tyra-source
 
           echo ""
-          echo "Isi ZIP:"
-          unzip -l "$ZIP_FILE" | head -n 100
+          echo "==== TYRA MASTER CONTENTS ===="
+          find tyra-source -maxdepth 3 -type f | head -n 100
 
-          echo ""
-          echo "Mengekstrak..."
-          unzip -q "$ZIP_FILE" -d extracted
-
-          echo ""
-          echo "Hasil ekstraksi:"
-          find extracted -maxdepth 3 -type f | head -n 100
-
-      - name: Find project directory
-        id: project
+      # ==============================
+      # FIND MAKEFILE.BASE
+      # ==============================
+      - name: Configure Tyra path
         run: |
-          echo "==== FINDING PROJECT ===="
+          echo "==== CONFIGURING TYRA ===="
 
-          MAKEFILE=$(find extracted -type f -name "Makefile" | head -n 1)
+          MAKEFILE_BASE=$(find tyra-source -type f -name "Makefile.base" | head -n 1)
+
+          if [ -z "$MAKEFILE_BASE" ]; then
+            echo "ERROR: Makefile.base tidak ditemukan di Tyra Master!"
+            echo ""
+            echo "Isi Tyra Master:"
+            find tyra-source -maxdepth 4 -type f | head -n 200
+            exit 1
+          fi
+
+          TYRA_DIR=$(dirname "$MAKEFILE_BASE")
+
+          echo "Makefile.base ditemukan:"
+          echo "$MAKEFILE_BASE"
+
+          echo ""
+          echo "Tyra directory:"
+          echo "$TYRA_DIR"
+
+          echo "TYRA_DIR=$TYRA_DIR" >> "$GITHUB_ENV"
+
+          # TyraCraft mencari /tyra/Makefile.base
+          sudo rm -rf /tyra
+          sudo ln -s "$(pwd)/$TYRA_DIR" /tyra
+
+          echo ""
+          echo "==== CHECK /tyra ===="
+          ls -lah /tyra
+          ls -lah /tyra/Makefile.base
+
+      # ==============================
+      # EXTRACT TYRACRAFT
+      # ==============================
+      - name: Extract TyraCraft
+        run: |
+          echo "==== EXTRACTING TYRACRAFT ===="
+
+          rm -rf tyracraft-source
+          mkdir -p tyracraft-source
+
+          if [ ! -f "tyracraft-master.zip" ]; then
+            echo "ERROR: tyracraft-master.zip tidak ditemukan!"
+            exit 1
+          fi
+
+          unzip -q tyracraft-master.zip -d tyracraft-source
+
+          echo ""
+          echo "==== SEARCHING FOR MAKEFILE ===="
+
+          MAKEFILE=$(find tyracraft-source -type f -name "Makefile" | head -n 1)
 
           if [ -z "$MAKEFILE" ]; then
-            echo "ERROR: Makefile tidak ditemukan setelah ekstraksi."
+            echo "ERROR: Makefile TyraCraft tidak ditemukan!"
+            find tyracraft-source -maxdepth 4 -type f | head -n 200
             exit 1
           fi
 
@@ -94,13 +141,12 @@ jobs:
 
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
 
-          echo ""
-          echo "Isi folder project:"
-          ls -la "$PROJECT_DIR"
-
+      # ==============================
+      # CHECK CONFIGURATION
+      # ==============================
       - name: Check build configuration
         run: |
-          echo "==== CHECK BUILD CONFIGURATION ===="
+          echo "==== BUILD CONFIGURATION ===="
 
           cd "$PROJECT_DIR"
 
@@ -108,17 +154,23 @@ jobs:
           pwd
 
           echo ""
-          echo "Makefile:"
-          ls -la Makefile
+          echo "Files:"
+          ls -lah
 
           echo ""
-          echo "Mencari Makefile.base:"
-          find . -name "Makefile.base" -print
-
-          echo ""
-          echo "Isi bagian awal Makefile:"
+          echo "==== MAKEFILE PREVIEW ===="
           head -n 100 Makefile
 
+          echo ""
+          echo "==== TYRA CHECK ===="
+          ls -lah /tyra
+          test -f /tyra/Makefile.base
+
+          echo "Tyra configuration found!"
+
+      # ==============================
+      # BUILD
+      # ==============================
       - name: Build project
         run: |
           echo "==== STARTING BUILD ===="
@@ -129,34 +181,42 @@ jobs:
           pwd
 
           echo ""
-          echo "Running make..."
+          echo "==== RUNNING MAKE ===="
 
           make
 
+      # ==============================
+      # SHOW OUTPUT
+      # ==============================
       - name: Check build output
         if: always()
         run: |
-          echo "==== CHECKING BUILD OUTPUT ===="
+          echo "==== BUILD OUTPUT ===="
 
           if [ -n "${PROJECT_DIR:-}" ] && [ -d "$PROJECT_DIR" ]; then
             cd "$PROJECT_DIR"
 
-            echo "Project contents after build:"
-            find . -maxdepth 4 -type f | sort | head -n 200
-          else
-            echo "Project directory tidak tersedia."
+            echo "Searching for generated files..."
+
+            find . -type f \( \
+              -name "*.elf" -o \
+              -name "*.ELF" -o \
+              -name "*.iso" -o \
+              -name "*.ISO" \
+            \) -print
           fi
 
+      # ==============================
+      # UPLOAD ARTIFACT
+      # ==============================
       - name: Upload build artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: TyraCraft-PS2-build
           path: |
-            extracted/**/*.elf
-            extracted/**/*.ELF
-            extracted/**/*.irx
-            extracted/**/*.IRX
-            extracted/**/*.iso
-            extracted/**/*.ISO
+            tyracraft-source/**/*.elf
+            tyracraft-source/**/*.ELF
+            tyracraft-source/**/*.iso
+            tyracraft-source/**/*.ISO
           if-no-files-found: warn
