@@ -1,87 +1,258 @@
-name: Extract Sources
+name: Build TyraCraft PS2
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
 
 jobs:
-  extract:
+  build:
     runs-on: ubuntu-latest
 
     steps:
+      # ==========================================
+      # 1. CHECKOUT
+      # ==========================================
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check ZIP files
+      # ==========================================
+      # 2. INSTALL BASIC TOOLS
+      # ==========================================
+      - name: Install dependencies
         run: |
-          echo "===== CHECKING FILES ====="
-          find . -maxdepth 2 -type f | sort
+          sudo apt-get update
+          sudo apt-get install -y \
+            make \
+            unzip \
+            zip \
+            curl \
+            git \
+            build-essential
+
+      # ==========================================
+      # 3. DOWNLOAD PREBUILT PS2DEV
+      # ==========================================
+      - name: Download PS2DEV toolchain
+        run: |
+          set -eux
+
+          echo "================================"
+          echo "INSTALLING PREBUILT PS2DEV"
+          echo "================================"
+
+          export PS2DEV=/usr/local/ps2dev
+
+          sudo mkdir -p "$PS2DEV"
+
+          curl -L --fail --retry 3 \
+            -o /tmp/ps2dev-latest.tar.gz \
+            https://github.com/ps2dev/ps2dev/releases/download/latest/ps2dev-ubuntu-latest.tar.gz
+
+          echo "Downloaded file:"
+          ls -lh /tmp/ps2dev-latest.tar.gz
+
+          sudo tar -xf /tmp/ps2dev-latest.tar.gz \
+            --strip-components=1 \
+            -C "$PS2DEV"
+
+      # ==========================================
+      # 4. SET PS2 ENVIRONMENT
+      # ==========================================
+      - name: Configure PS2DEV environment
+        run: |
+          set -eux
+
+          echo "PS2DEV=/usr/local/ps2dev" >> "$GITHUB_ENV"
+          echo "PS2SDK=/usr/local/ps2dev/ps2sdk" >> "$GITHUB_ENV"
+          echo "GSKIT=/usr/local/ps2dev/gsKit" >> "$GITHUB_ENV"
+
+          echo "/usr/local/ps2dev/bin" >> "$GITHUB_PATH"
+          echo "/usr/local/ps2dev/ee/bin" >> "$GITHUB_PATH"
+          echo "/usr/local/ps2dev/iop/bin" >> "$GITHUB_PATH"
+          echo "/usr/local/ps2dev/dvp/bin" >> "$GITHUB_PATH"
+          echo "/usr/local/ps2dev/ps2sdk/bin" >> "$GITHUB_PATH"
+
+      # ==========================================
+      # 5. VERIFY COMPILER
+      # ==========================================
+      - name: Verify PS2 compiler
+        run: |
+          set -eux
+
+          echo "PS2DEV=$PS2DEV"
+          echo "PS2SDK=$PS2SDK"
+
+          test -d "$PS2DEV"
+          test -d "$PS2SDK"
+
+          command -v mips64r5900el-ps2-elf-g++
+
+          mips64r5900el-ps2-elf-g++ --version
+
+      # ==========================================
+      # 6. EXTRACT TYRA MASTER
+      # ==========================================
+      - name: Extract Tyra Master
+        run: |
+          set -eux
+
+          test -f tyra-master.zip
+
+          rm -rf /tmp/tyra-extract
+          mkdir -p /tmp/tyra-extract
+
+          unzip -q tyra-master.zip -d /tmp/tyra-extract
+
+          echo "Searching Makefile.base..."
+
+          TYRA_BASE=$(find /tmp/tyra-extract \
+            -type f \
+            -name Makefile.base \
+            -print -quit)
+
+          test -n "$TYRA_BASE"
+
+          TYRA_DIR=$(dirname "$TYRA_BASE")
+
+          echo "Tyra directory:"
+          echo "$TYRA_DIR"
+
+          sudo rm -rf /tyra
+          sudo ln -s "$TYRA_DIR" /tyra
+
+          echo "================================"
+          echo "VERIFYING TYRA"
+          echo "================================"
+
+          ls -la /tyra
+
+          test -f /tyra/Makefile.base
+          test -d /tyra/engine
+
+      # ==========================================
+      # 7. EXTRACT TYRACRAFT
+      # ==========================================
+      - name: Extract TyraCraft
+        run: |
+          set -eux
+
+          test -f tyracraft-master.zip
+
+          rm -rf "$GITHUB_WORKSPACE/tyracraft"
+
+          mkdir -p "$GITHUB_WORKSPACE/tyracraft"
+
+          unzip -q tyracraft-master.zip \
+            -d "$GITHUB_WORKSPACE/tyracraft"
+
+          MAKEFILE=$(find "$GITHUB_WORKSPACE/tyracraft" \
+            -type f \
+            -name Makefile \
+            -print -quit)
+
+          test -n "$MAKEFILE"
+
+          PROJECT_DIR=$(dirname "$MAKEFILE")
+
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+
+          echo "================================"
+          echo "TYRACRAFT PROJECT"
+          echo "================================"
+
+          echo "$PROJECT_DIR"
+
+          ls -la "$PROJECT_DIR"
+
+      # ==========================================
+      # 8. CHECK BUILD FILES
+      # ==========================================
+      - name: Inspect project
+        run: |
+          set -eux
+
+          cd "$PROJECT_DIR"
+
+          echo "================================"
+          echo "MAKEFILE"
+          echo "================================"
+
+          sed -n '1,160p' Makefile
 
           echo ""
-          echo "===== ZIP FILES ====="
-          find . -type f \( -iname "*.zip" \) -print
+          echo "================================"
+          echo "RESOURCE DIRECTORY"
+          echo "================================"
 
-      - name: Create extraction directory
-        run: |
-          mkdir -p extracted
+          find . -maxdepth 2 -type d | sort
 
-      - name: Extract tyra-master.zip
-        run: |
-          echo "===== EXTRACTING TYRA MASTER ====="
-
-          ZIP_FILE=$(find . -type f -iname "tyra-master.zip" | head -n 1)
-
-          if [ -z "$ZIP_FILE" ]; then
-            echo "ERROR: tyra-master.zip tidak ditemukan!"
-            exit 1
+          if [ -d res ]; then
+            echo "res directory exists"
+            find res -maxdepth 2 -type f | head -100
+          else
+            echo "WARNING: res directory missing"
           fi
 
-          echo "ZIP ditemukan: $ZIP_FILE"
-
-          unzip -q "$ZIP_FILE" -d extracted/tyra-master
-
-          echo "===== TYRA MASTER EXTRACTED ====="
-          find extracted/tyra-master -maxdepth 3 -type f | head -n 100
-
-      - name: Extract tyracraft-master.zip
+      # ==========================================
+      # 9. BUILD TYRA ENGINE
+      # ==========================================
+      - name: Build Tyra Engine
         run: |
-          echo "===== EXTRACTING TYRACRAFT ====="
+          set -eux
 
-          ZIP_FILE=$(find . -type f -iname "tyracraft-master.zip" | head -n 1)
+          cd "$PROJECT_DIR"
 
-          if [ -z "$ZIP_FILE" ]; then
-            echo "ERROR: tyracraft-master.zip tidak ditemukan!"
-            exit 1
-          fi
+          echo "================================"
+          echo "BUILDING TYRA ENGINE"
+          echo "================================"
 
-          echo "ZIP ditemukan: $ZIP_FILE"
+          make rebuild-engine
 
-          unzip -q "$ZIP_FILE" -d extracted/tyracraft
-
-          echo "===== TYRACRAFT EXTRACTED ====="
-          find extracted/tyracraft -maxdepth 3 -type f | head -n 100
-
-      - name: Show complete extraction structure
+      # ==========================================
+      # 10. BUILD TYRACRAFT
+      # ==========================================
+      - name: Build TyraCraft
         run: |
-          echo "================================="
-          echo "===== EXTRACTION COMPLETE ====="
-          echo "================================="
+          set -eux
 
-          echo ""
-          echo "===== FOLDERS ====="
-          find extracted -type d | sort | head -n 200
+          cd "$PROJECT_DIR"
 
-          echo ""
-          echo "===== IMPORTANT BUILD FILES ====="
-          find extracted \
-            \( -iname "Makefile" -o -iname "Makefile.base" -o -iname "CMakeLists.txt" \) \
-            -print | sort
+          echo "================================"
+          echo "BUILDING TYRACRAFT"
+          echo "================================"
 
-      - name: Upload extracted sources
+          make rebuild
+
+      # ==========================================
+      # 11. FIND ELF
+      # ==========================================
+      - name: Find ELF
+        if: always()
+        run: |
+          echo "================================"
+          echo "SEARCHING FOR ELF"
+          echo "================================"
+
+          find "$GITHUB_WORKSPACE" \
+            -type f \
+            \( -iname "*.elf" -o -iname "*.ELF" \) \
+            -print
+
+      # ==========================================
+      # 12. UPLOAD RESULT
+      # ==========================================
+      - name: Upload TyraCraft ELF
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: extracted-sources
-          path: extracted/
-          retention-days: 7
+          name: TyraCraft-PS2-ELF
+          path: |
+            tyracraft/**/*.elf
+            tyracraft/**/*.ELF
+          if-no-files-found: error
+          retention-days: 30
