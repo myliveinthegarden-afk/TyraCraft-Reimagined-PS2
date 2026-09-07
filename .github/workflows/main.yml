@@ -1,297 +1,583 @@
-name: Build TyraCraft PS2
+name: Extract and Build TyraCraft PS2
 
 on:
+  workflow_dispatch:
+
   push:
     branches:
       - main
-
-  workflow_dispatch:
+    paths-ignore:
+      - "extracted/**"
+      - "release/**"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
 
       # ============================================================
-      # 1. CHECKOUT REPOSITORY
+      # 1. DOWNLOAD REPOSITORY
       # ============================================================
-
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
 
       # ============================================================
-      # 2. INSTALL BASIC DEPENDENCIES
+      # 2. INSTALL TOOLS
       # ============================================================
-
-      - name: Install dependencies
+      - name: Install extraction tools
         run: |
-          set -eux
+          set -euxo pipefail
 
           sudo apt-get update
 
           sudo apt-get install -y \
             unzip \
             zip \
-            make \
-            cmake \
-            git \
-            wget \
-            curl \
             file \
             tree
 
 
       # ============================================================
-      # 3. CHECK FILES IN REPOSITORY
+      # 3. CHECK ZIP FILES
       # ============================================================
-
-      - name: Check repository files
+      - name: Find ZIP archives
         run: |
-          set -eux
+          set -euxo pipefail
 
           echo "================================"
-          echo "REPOSITORY FILES"
+          echo "ZIP FILES FOUND"
           echo "================================"
 
-          pwd
-
-          ls -lah
+          find . \
+            -maxdepth 2 \
+            -type f \
+            -iname "*.zip" \
+            -print \
+            | sort
 
           echo ""
-          echo "================================"
-          echo "SEARCHING FOR ZIP FILES"
-          echo "================================"
 
-          find . -maxdepth 3 -type f \
-            -iname "*.zip" -o -iname "*.ZIP" \
-            -print
+          test -f tyra-master.zip
+
+          test -f tyracraft-master.zip
 
 
       # ============================================================
-      # 4. VERIFY TYRA ZIP
+      # 4. VERIFY ZIP FILES
       # ============================================================
-
-      - name: Check Tyra ZIP
+      - name: Verify ZIP archives
         run: |
-          set -eux
+          set -euxo pipefail
 
           echo "================================"
-          echo "CHECKING TYRA ZIP"
+          echo "VERIFYING TYRA ZIP"
           echo "================================"
-
-          if [ ! -f "tyra-master.zip" ]; then
-            echo "ERROR: tyra-master.zip not found"
-            exit 1
-          fi
 
           unzip -t tyra-master.zip
 
           echo ""
-          echo "================================"
-          echo "TYRA ZIP CONTENT"
-          echo "================================"
-
-          unzip -l tyra-master.zip | head -100
-
-
-      # ============================================================
-      # 5. VERIFY TYRACRAFT ZIP
-      # ============================================================
-
-      - name: Check TyraCraft ZIP
-        run: |
-          set -eux
 
           echo "================================"
-          echo "CHECKING TYRACRAFT ZIP"
+          echo "VERIFYING TYRACRAFT ZIP"
           echo "================================"
-
-          if [ ! -f "tyracraft-master.zip" ]; then
-            echo "ERROR: tyracraft-master.zip not found"
-            exit 1
-          fi
 
           unzip -t tyracraft-master.zip
 
-          echo ""
-          echo "================================"
-          echo "TYRACRAFT ZIP CONTENT"
-          echo "================================"
-
-          unzip -l tyracraft-master.zip | head -100
-
 
       # ============================================================
-      # 6. EXTRACT BOTH PROJECTS
+      # 5. EXTRACT TYRA
       # ============================================================
-
-      - name: Extract source files
+      - name: Extract Tyra
         run: |
-          set -eux
+          set -euxo pipefail
 
-          echo "================================"
-          echo "EXTRACTING TYRA"
-          echo "================================"
+          rm -rf extracted/tyra
 
           mkdir -p extracted/tyra
 
-          unzip -q tyra-master.zip \
+          unzip -o \
+            tyra-master.zip \
             -d extracted/tyra
 
 
-          echo "================================"
-          echo "EXTRACTING TYRACRAFT"
-          echo "================================"
+      # ============================================================
+      # 6. EXTRACT TYRACRAFT
+      # ============================================================
+      - name: Extract TyraCraft
+        run: |
+          set -euxo pipefail
+
+          rm -rf extracted/tyracraft
 
           mkdir -p extracted/tyracraft
 
-          unzip -q tyracraft-master.zip \
+          unzip -o \
+            tyracraft-master.zip \
             -d extracted/tyracraft
 
 
+      # ============================================================
+      # 7. SHOW EXTRACTION RESULT
+      # ============================================================
+      - name: Show extracted files
+        run: |
+          set -euxo pipefail
+
           echo "================================"
-          echo "EXTRACTION COMPLETE"
+          echo "EXTRACTED FILE STRUCTURE"
+          echo "================================"
+
+          tree -L 3 extracted || true
+
+          echo ""
+
+          echo "================================"
+          echo "MAKEFILES FOUND"
           echo "================================"
 
           find extracted \
-            -maxdepth 3 \
-            -type d \
-            -print
-
-
-      # ============================================================
-      # 7. FIND ACTUAL TYRA DIRECTORY
-      # ============================================================
-
-      - name: Find Tyra directory
-        run: |
-          set -eux
-
-          echo "================================"
-          echo "SEARCHING FOR TYRA DIRECTORY"
-          echo "================================"
-
-          TYRA_DIR=""
-
-          if [ -f "extracted/tyra/tyra-master/Makefile" ]; then
-            TYRA_DIR="extracted/tyra/tyra-master"
-          else
-            TYRA_DIR=$(find extracted/tyra \
-              -type f \
+            -type f \
+            \( \
               -name "Makefile" \
-              -printf '%h\n' \
-              | head -1)
+              -o \
+              -name "Makefile.base" \
+            \) \
+            -print \
+            | sort
+
+
+      # ============================================================
+      # 8. UPLOAD EXTRACTED SOURCE AS ARTIFACT
+      # ============================================================
+      - name: Upload extracted source
+        uses: actions/upload-artifact@v4
+        with:
+          name: TyraCraft-Extracted-Source
+          path: extracted/
+          retention-days: 30
+
+
+      # ============================================================
+      # 9. COMMIT EXTRACTION TO REPOSITORY
+      # ============================================================
+      - name: Commit extracted source
+        run: |
+          set -euxo pipefail
+
+          git config user.name "github-actions[bot]"
+
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add extracted/
+
+          if git diff --cached --quiet; then
+
+            echo "No extraction changes."
+
+          else
+
+            git commit \
+              -m "Extract Tyra and TyraCraft source [skip ci]"
+
+            git push
+
           fi
+
+
+      # ============================================================
+      # 10. FIND TYRA DIRECTORY
+      # ============================================================
+      - name: Locate Tyra project
+        run: |
+          set -euxo pipefail
+
+          TYRA_DIR=$(find extracted/tyra \
+            -type f \
+            -name "Makefile.base" \
+            -printf '%h\n' \
+            | head -n 1)
 
           if [ -z "$TYRA_DIR" ]; then
-            echo "ERROR: Tyra Makefile not found"
+
+            echo "ERROR: Makefile.base not found!"
+
             exit 1
+
           fi
 
-          echo "TYRA_DIR=$TYRA_DIR"
-
-          echo "TYRA_DIR=$TYRA_DIR" >> "$GITHUB_ENV"
+          echo "TYRA_DIR=$TYRA_DIR" \
+            >> "$GITHUB_ENV"
 
           echo ""
-          echo "================================"
-          echo "TYRA FILES"
-          echo "================================"
+
+          echo "Tyra directory:"
+
+          echo "$TYRA_DIR"
 
           ls -lah "$TYRA_DIR"
 
 
       # ============================================================
-      # 8. FIND ACTUAL TYRACRAFT DIRECTORY
+      # 11. FIND TYRACRAFT DIRECTORY
       # ============================================================
-
-      - name: Find TyraCraft directory
+      - name: Locate TyraCraft project
         run: |
-          set -eux
+          set -euxo pipefail
 
-          echo "================================"
-          echo "SEARCHING FOR TYRACRAFT DIRECTORY"
-          echo "================================"
+          CRAFT_DIR=$(find extracted/tyracraft \
+            -type f \
+            -name "Makefile" \
+            -printf '%h\n' \
+            | head -n 1)
 
-          PROJECT_DIR=""
+          if [ -z "$CRAFT_DIR" ]; then
 
-          if [ -f "extracted/tyracraft/tyracraft-master/Makefile" ]; then
-            PROJECT_DIR="extracted/tyracraft/tyracraft-master"
-          else
-            PROJECT_DIR=$(find extracted/tyracraft \
-              -type f \
-              -name "Makefile" \
-              -printf '%h\n' \
-              | head -1)
-          fi
+            echo "ERROR: TyraCraft Makefile not found!"
 
-          if [ -z "$PROJECT_DIR" ]; then
-            echo "ERROR: TyraCraft Makefile not found"
             exit 1
+
           fi
 
-          echo "PROJECT_DIR=$PROJECT_DIR"
-
-          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+          echo "CRAFT_DIR=$CRAFT_DIR" \
+            >> "$GITHUB_ENV"
 
           echo ""
-          echo "================================"
-          echo "TYRACRAFT FILES"
-          echo "================================"
 
-          ls -lah "$PROJECT_DIR"
+          echo "TyraCraft directory:"
+
+          echo "$CRAFT_DIR"
+
+          ls -lah "$CRAFT_DIR"
 
 
       # ============================================================
-      # 9. CHECK PROJECT CONFIGURATION
+      # 12. CHECK PROJECT STRUCTURE
       # ============================================================
-
-      - name: Check build configuration
+      - name: Inspect project structure
         run: |
-          set -eux
+          set -euxo pipefail
 
           echo "================================"
-          echo "TYRA DIRECTORY"
+          echo "TYRA STRUCTURE"
           echo "================================"
 
-          echo "$TYRA_DIR"
+          find "$TYRA_DIR" \
+            -maxdepth 2 \
+            -type d \
+            -print \
+            | sort
 
           echo ""
+
           echo "================================"
-          echo "TYRACRAFT DIRECTORY"
+          echo "TYRACRAFT STRUCTURE"
           echo "================================"
 
-          echo "$PROJECT_DIR"
-
-          echo ""
-          echo "================================"
-          echo "TYRA MAKEFILE"
-          echo "================================"
-
-          sed -n '1,160p' \
-            "$TYRA_DIR/Makefile" || true
+          find "$CRAFT_DIR" \
+            -maxdepth 2 \
+            -type d \
+            -print \
+            | sort
 
           echo ""
+
           echo "================================"
           echo "TYRACRAFT MAKEFILE"
           echo "================================"
 
-          sed -n '1,200p' \
-            "$PROJECT_DIR/Makefile" || true
+          sed -n '1,220p' \
+            "$CRAFT_DIR/Makefile"
 
 
       # ============================================================
-      # 10. START PS2DEV CONTAINER
+      # 13. DOWNLOAD PS2DEV ENVIRONMENT
       # ============================================================
-
-      - name: Pull PS2 development environment
+      - name: Download PS2DEV Docker image
         run: |
-          set -eux
+          set -euxo pipefail
+
+          docker pull ps2dev/ps2dev:latest
+
+
+      # ============================================================
+      # 14. VERIFY PS2 COMPILER
+      # ============================================================
+      - name: Verify PS2DEV toolchain
+        run: |
+          set -euxo pipefail
+
+          docker run --rm \
+            ps2dev/ps2dev:latest \
+            sh -lc '
+
+              echo "================================"
+
+              echo "PS2DEV TOOLCHAIN"
+
+              echo "================================"
+
+              echo ""
+
+              echo "PS2DEV=$PS2DEV"
+
+              echo "PS2SDK=$PS2SDK"
+
+              echo ""
+
+              command -v \
+                mips64r5900el-ps2-elf-g++
+
+              echo ""
+
+              mips64r5900el-ps2-elf-g++ \
+                --version
+
+              echo ""
+
+              command -v vcl || true
+
+              command -v vclpp || true
+
+              command -v dvp-as || true
+            '
+
+
+      # ============================================================
+      # 15. BUILD TYRA ENGINE
+      # ============================================================
+      - name: Build Tyra Engine
+        run: |
+          set -euxo pipefail
 
           echo "================================"
-          echo "DOWNLOADING PS2 TOOLCHAIN"
-          echo "================================
+          echo "BUILDING TYRA ENGINE"
+          echo "================================"
+
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -v "$GITHUB_WORKSPACE/$TYRA_DIR:/tyra" \
+            -w /tyra/engine \
+            ps2dev/ps2dev:latest \
+            sh -lc '
+
+              set -eux
+
+              echo "Current directory:"
+
+              pwd
+
+              echo ""
+
+              echo "Cleaning previous build..."
+
+              make cleaner || true
+
+              echo ""
+
+              echo "Building engine..."
+
+              make -j2
+            '
+
+
+      # ============================================================
+      # 16. CHECK TYRA ENGINE
+      # ============================================================
+      - name: Check Tyra Engine output
+        run: |
+          set -euxo pipefail
+
+          echo "================================"
+          echo "TYRA ENGINE OUTPUT"
+          echo "================================"
+
+          find "$TYRA_DIR" \
+            -type f \
+            \( \
+              -name "*.a" \
+              -o \
+              -name "*.elf" \
+            \) \
+            -print \
+            | sort || true
+
+
+      # ============================================================
+      # 17. BUILD TYRACRAFT
+      # ============================================================
+      - name: Build TyraCraft
+        run: |
+          set -euxo pipefail
+
+          echo "================================"
+          echo "BUILDING TYRACRAFT"
+          echo "================================"
+
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -v "$GITHUB_WORKSPACE/$TYRA_DIR:/tyra" \
+            -w "/workspace/$CRAFT_DIR" \
+            ps2dev/ps2dev:latest \
+            sh -lc '
+
+              set -eux
+
+              echo "Current directory:"
+
+              pwd
+
+              echo ""
+
+              echo "Cleaning previous build..."
+
+              make cleaner || true
+
+              echo ""
+
+              echo "Building TyraCraft..."
+
+              make -j2
+            '
+
+
+      # ============================================================
+      # 18. SEARCH FOR ELF
+      # ============================================================
+      - name: Find generated ELF
+        run: |
+          set -euxo pipefail
+
+          echo "================================"
+          echo "SEARCHING FOR ELF"
+          echo "================================"
+
+          find "$CRAFT_DIR" \
+            -type f \
+            -iname "*.elf" \
+            -print \
+            | sort
+
+          ELF_FILE=$(find "$CRAFT_DIR" \
+            -type f \
+            -iname "*.elf" \
+            | head -n 1)
+
+          if [ -z "$ELF_FILE" ]; then
+
+            echo ""
+
+            echo "ERROR: ELF WAS NOT GENERATED"
+
+            exit 1
+
+          fi
+
+          echo ""
+
+          echo "ELF FOUND:"
+
+          echo "$ELF_FILE"
+
+          file "$ELF_FILE"
+
+          mkdir -p release
+
+          cp "$ELF_FILE" \
+            release/tyracraft-v92.elf
+
+
+      # ============================================================
+      # 19. VERIFY FINAL ELF
+      # ============================================================
+      - name: Verify final ELF
+        run: |
+          set -euxo pipefail
+
+          echo "================================"
+          echo "FINAL ELF"
+          echo "================================"
+
+          ls -lh release/
+
+          file release/tyracraft-v92.elf
+
+
+      # ============================================================
+      # 20. UPLOAD ELF ARTIFACT
+      # ============================================================
+      - name: Upload TyraCraft ELF
+        uses: actions/upload-artifact@v4
+        with:
+          name: TyraCraft-v92-PS2-ELF
+          path: release/tyracraft-v92.elf
+          if-no-files-found: error
+          retention-days: 30
+
+
+      # ============================================================
+      # 21. COMMIT ELF TO REPOSITORY
+      # ============================================================
+      - name: Commit generated ELF
+        run: |
+          set -euxo pipefail
+
+          git config user.name "github-actions[bot]"
+
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add release/tyracraft-v92.elf
+
+          if git diff --cached --quiet; then
+
+            echo "No ELF changes."
+
+          else
+
+            git commit \
+              -m "Build TyraCraft v92 bootable ELF [skip ci]"
+
+            git push
+
+          fi
+
+
+      # ============================================================
+      # 22. FINAL RESULT
+      # ============================================================
+      - name: Final result
+        if: always()
+        run: |
+          echo "================================"
+
+          echo "BUILD PROCESS FINISHED"
+
+          echo "================================"
+
+          echo ""
+
+          echo "Extracted sources:"
+
+          find extracted \
+            -maxdepth 2 \
+            -type d \
+            -print \
+            | sort || true
+
+          echo ""
+
+          echo "Release files:"
+
+          find release \
+            -type f \
+            -print \
+            | sort || true
