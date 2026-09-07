@@ -1,0 +1,1338 @@
+# v0.86.140-pre-alpha 12/08/2024
+
+- chore: updates version
+- chore: updates CHANGELOG
+- fix: char position over the label
+- fix: slot width in options menu
+- chore: remove commented code
+- feat: added extended ASCII support
+- chore: check triangle intersection before clipping
+- chore: added triangle vs frustum intersect
+- chore: remove near and far planes from clipping check
+- chore: remove mazecraft from world types
+- chore: fix character alignment
+- chore: control alpha blending
+- chore: apply back face culling before clipping
+- chore: fix close blocks update
+- chore: remove cam offset in first person mode
+- chore: separate transparent and solid clipped data
+- chore: fix clipping vertex data and UV mapping
+- chore: fix dynamic array growth
+- chore: initial frustum clipping algorithm in world space
+- chore: added clipping lib
+- chore: added camera position to chunk update
+- fix: block draw data index
+- chore: ajust the sfx volume
+- fix: remove pumpkin from spawn position
+- chore: set happy theme when level done
+- chore: play level done sfx
+- chore: added next level dialog
+- chore: implements minigame level reset
+- refactore: move files
+- chore: added mini game tab at create and load screens
+- chore: update mazecraft level params
+- fix: next level generation
+- fix: crash on loading next level
+- chore: added custom assets and loading next level screen
+- chore: added custom mazecraft playlist
+- fix: unloading a not loaded texture causing a crash
+- chore: implements save/load minigames
+- chore: apply mazecraft rules and initialization of gameplay
+- chore: apply mazecraft states for loading nad creating
+- chore: added states to load and create maze craft mini game
+- chore: added util methods for flaying and inventory
+- chore: added mini game screen
+- fix: comparison type
+- chore: added mini game info model
+- chore: added mini game file extension
+- chore: added gameMode to save file
+- chore: added mini game initial screen
+- chore: change happy theme lightinig
+- chore: added afterInit event
+- chore: added missing case to switch
+- chore: added MazePlayingState to game mode handler method
+- refactore: apply game mode to StateGamePlay
+- chore: added maze playing state
+- chore: added GameMode prop to NewGameOptions model
+- chore: implemented custom g_ticksCounter setters
+- chore: comment unused code
+- chore: added sky color set methods
+- refactore: moves GameMode enum to constants
+- (feat) Merge branch 'develop' into feature/mini-game/mazecraft
+- fix: wrong behaviour when placing double slab at the same block space
+- fix: wrong lighted faces with oriented blocks
+- chore: remove code if DEBUG_MODE is disabled
+- chore: added float type and remove comments
+- chore: update roadmap
+- refactore: apply DRY
+- fix: remove block when has no visible faces
+- (feat) Merge branch 'feat/chunk-update' into develop
+- fix: frame dropping in particle renderization
+- refactore: reuse add block method
+- chore: implement single block update in a chunk
+- chore: implements asyc draw data loading
+- refactore: prevent to rebuild the vertex data every call
+- fix: moon transparency
+- fix: item selection at inventory
+- fix: leaves transparency
+- fix: transparency issue due to drawing order
+- fix: slab top and bottom faces illumination
+- fix: skin transition speed by delta time chore: update base method signature
+- chore: explicit declaration
+- fix: alpha correction
+- fix: gravity after flying
+- chore: updates version
+- chore: updates CHANGELOG
+
+# v0.83.120-pre-alpha 07/03/2024
+
+- chore: update how chunks to load are sorted and calcuated
+- refacore: async chunk load/unload
+- chore: resize skybox
+- chore: add AA and clip to player model
+- feat: smoother sun and moon moviment
+- chore: replace magic number
+- chore: change variable update in debug only
+- feature: improves clouds moviment by lerp
+- chore: improves chunk loading chore: added chunk loading time to debug info
+- refactore particle manager
+- chore: added global debug variabel
+- refactore: change some itens from pointers to reference and coment unused code
+- chore: add vram inspection in debug mode
+- fix: handled item color update
+- chore: replcae concretes by wools
+- chore: improve liquid height calculation
+- fix: water flux rendering refactore: apply liquid orientation to metadata
+- fix: dynamic ticks update on delta time
+- refactore: apply sprite offset to allow loading font atlas
+- chore: remove save and quit option from in game menu
+- fix: player and handled item lighting
+- chore: update light values
+- feat: implements put block animation
+- chore: remove unused properties
+- refactore: highlight target block system refactore: block damage update
+- refactore: improves chunk loading speed change switch case to map object
+- chore: add FIXME
+- feat: implements handled item animation
+- feat: implements bobbing camera
+- chore: remove FIXME
+- refactore: move navigate call
+- chore: add background to in game menu
+- fix: invalid reference when draw distance is changed
+- fix: update handled item draw data
+- chore: fix slab UV
+- chore: remove CHISELED_STONE_BRICKS_SLAB
+- feat: implements quick jump
+- chore: remove unused variable
+- feat: implements basic slab
+- fix: clouds rendering refactore: apply new inverse matrix calc refactore: separate update and tick
+- temp(WIP): implements inverse matrix with VU
+- feat: validade save files
+- chore: remove third part lib gzip
+- fix: saving/loading state; refactore: uses zlib PS2 port to data compression
+- fix: default deadzone values fix: player skin persistency
+- Merge branch 'feature/skin-selector' into develop
+- fix: cam type toggling
+- feat: implements skin selection
+- chore: implements change skin button in main menu
+- chore: move skin preview code from state_main to screen_main chore: added player name under skin
+- chore: load selected skin in my menu
+- fix: target block detection
+- chore: fix mob unloading and range update
+- refactore: separate update and render pipelines
+- fix: repeated updates at the same tick refactore: completely separate ticks and game loop updates
+- fix: texture unlink
+- chore: added TODO
+- feat: implenented pig sound control
+- chore: added pig sounds
+- fix: pig waling animation fix: texture unlink when destroyed
+- chore: add direction timer
+- refactore: bbox updates to main loop fix: positions updates
+- chore: adds virtual method getHitBox
+- feat: implements multiples mobs instances
+- feat: add mob manager to world
+- feat: implements mob manager
+- refactore: update enum names and constructors signature
+- refactore: moves pig to mob directory
+- feat: implements mob and mob categories
+- feat: implements basic pig calss
+- fix: chunk drapatent draw data
+- refactore: update constants values
+- refactore: chunks updates when the world is modded
+- feat: implements fast chunk lookup
+- refactore: removes unused method
+- refactore: added neightbor chunks references
+- refactore: removes unused prop
+- feat: implements memory check for safe loading
+- feat: unload draw data of hidden chuncks
+- refactore: reduce memory usage
+- fix: clear aabb tree after unloading world
+- fix: comparing different types
+- fix: memory leak
+- feat: implements memory monitor
+- refactore: use inline functions and pointers
+- fix: increments max tree size
+- refactore: prevent reconstruct a str every call
+- refactore: reduce memory usage
+- refactore: reduce memory usage
+- fix: chunk overloading after water propagation
+- refactore: turns g_AABBTree into a pointer
+- chore: update initalization logs messages
+- refactore: block and player extends entity
+- feat: implements entity class
+- fix: particles creation time
+- feat: implements particles collision
+- refactore: remove direct chunck access at collision test refactore: move terrain height update from world to player class fix: collision    slyding in X and Z axis feat: apply aabb tree to collisions tests
+- refactore: remove unused nearby chunks
+- refactore: remove chuncks access in collision tests
+- fix: copy by const reference
+- fix: target block detection
+- refactore: apply aabb tree to collision check refactore: separate camera and target blocks update
+- feat: implements collision manager
+- chore: add TODO
+- feat: implements 3D segment vs aabb intersection
+- refactore: remove unfinished code
+- chore: add 3lib bvh for dynamic AABB tree
+- Merge branch 'develop' into feature/aabb-tree
+- chore: coment unused code
+- feat: implement handled torch item
+- refactore: remove usings
+- feat: implements handled item
+- refactore: rename method
+- refactore: remove unused code
+- fix: liquid height
+- fix: bbox rotation and accuracy refactore: move model and bbox creationto separated methods
+- fix: torch hardness fix: target block update
+- fix: oriented bbox creation in async chunk building
+- feat: implemente basic torch
+- fix: liquid propagation in down direction
+- chore: remove unused code
+- feat: implements volumetric liquid rendering
+- fix: liquid propagation over vegetation
+- fix: blocks light when propagating lava
+- fix: stacked liquid height
+- fix: lava illumination
+- fix: visible faces of oriented liquids
+- feat: added new items Ids
+- feat: implemets orientation helper
+- feat: implements volumetric oriented lava
+- fix: increase lava on surface
+- feat: add water and lava bucket fix(memory-leak): destroy concrete blocks
+- chore: remove FIXME
+- feat: implements volumetric water mesh rotation
+- fix: remove return from set methods
+- refactore: separate mesh builder by block type
+- refactore: rename method
+- fix: typo
+- refactore: move mesh generation from chunk to meshbuilder
+- fix: infinity while loop
+- fix: lava generation in surface and metadata level
+- fix: liqui propagation on init world; fix: liquid propagation to lower ground first
+- chore: increase the number of lava sources
+- fix: lava propagation
+- fix: update liquid propagation values
+- refactore: update g_ticksCounter to int type
+- refactore: update ticks counter system
+- feat: added basic flowing water sound
+- fix: remove/add liquid
+- feat: implements water valumes; reafctore: update liquids for water and lava
+- fix: lava illumination
+- feat: implements liquid initiation
+- feat: added lava block
+- feat: implements water propagation
+- fix: block faces visibility and bbox rotation
+- feat: implements block orientation
+- refactore: prevent recreating packets every frame
+- refactor: change code execution time and add chunks constants
+- feat: implements manual LOD
+- refactor: change const reference to pointer feat: apply isTicksCounterAt to remove some unecessary calls every frame;
+- feat: implements isTicksCounterAt
+- feat: define bag params by chunk distance fix: block placement
+- refactor: remove unused property
+- fix: change id prop size definition
+- refactor: compress offset datafrom Vec4 to u32
+- chore: add TODOs
+- fix: reset breaking time when target block is changed
+- fix: braking time of block in creative mode
+- fix: floating world params
+- refactor: remove static frame rate
+- chore: adds a FIXME
+- fix: floating world generation
+
+# v0.43.71-pre-alpha 05/07/2023
+
+- chore: update version
+- chore: update roadmap
+- chore: update changelog
+- fix: player mesh scale in X axis
+- chore: ajust sun and moon scales
+- fix: day night sky colora refactor: removes ambientLightIntensity from WorldLightModel
+- fix: seconds to ticks conversion, now the cycle is 20 min exactly
+- feat: implements sun and moon entities
+- refactore: create chunk init method and mode the params
+- chore: add commented code for memory inspection
+- fix: memory leak at options screen
+- refactor: remove unused code
+- fix: dynamic fov when player is flying
+- feat: apply dynamic FOV based in player speed
+- chore: ajust the animation speet to player speed
+- feat: add camera options to options screen
+- feat: implements dynamic cam sesitivity and inversion
+- fix: birch log block texture mapping
+- chore: update roadmap
+- fix: etities rendering order
+- fix: camera initialization in first person for default
+- chore: update cam sesitivity
+- chore: apply changes after save
+- feat: implements third person cam
+- feat: implements save settings and custom options
+- chore: update roadmap
+- fix: clouds light at night
+- refactore: update code for faster block info loading
+- refactor: code improvements
+- refactor: replace scale vector by a const float
+- refactor: removes block matix
+- refactor: use index to map UV intead col and row
+- refactor: pass value instead pointer
+- fix: bottom line in hot inventory
+- refactor: remove print method and gropu matrix defeinition
+- refactor: apply els condition
+- chore: update max distance for block breaking
+- chore: updates roadmap
+- fix: game crash when saving with max draw distance
+- chore: updates roadmap
+- feat: implements loading labels and multi languages
+- chore: apply language to ingame menu
+- chore: apply language to about screen
+- chore: apply translation to create and load screens
+- chore: translate main menu
+- chore: add new method signature
+- chore: implements language selection screen
+- chore: implements language manager
+- fix: max player speeds
+- refactore: remove unused code
+- chore: remove printing to log
+- chore: update roadmap
+- fix: particles light color
+- chore: remove log message
+- fix: remove vegetation from upper block when it is removed
+- chore: implements get blocks methods
+- refactor: property name and check if block is target
+- chore: update roadmap
+- feat: implements block hardness
+- refactor: rename method loadTextures to loadBlocksInfo
+- refactor: rename BlockTextureInfoRepository to BlockInfoRepository
+- chore: updates roadmap
+- chor: rename properties and implements particle types
+- refactor: prevento call destroyExpiredParticles every frame
+- chore: update particle speed
+- refactor: remove unecessary code at particle creation
+- feature: implements basic blocks particles
+- feat: adds colored concretes
+- chore: update roadmap
+- chore: fix changelog date
+- chore: update changelog and version
+
+# v0.33.57-pre-alpha 09/06/2023
+
+- feat: readds birch trees
+- feat: add grass vegetation refactor: add cross blocks to blockinfo
+- feat: implements cross block and adds flowers
+- chore: remove commented code
+- feat: adds gravel block
+- fix: underwater overlay alpha
+- chore: update changelog
+
+# v0.29.56-pre-alpha 06/06/2023
+
+- chore: sort chunks when current chunk changes
+- chore: update changelog and version
+- feat: improves memory allocation on chunk loading and replace vector push_back by emplace_back
+- chore: remove switchThread while loading and unloading chunks, control loading flux
+- fix: block face light factor
+- refactor: prevent to realocata vertexData for every block
+- refactor: change from std::array to C style array
+- refactor: apply direct access
+- hotfix: fix chunk loading
+- chore: remove debug info from ELF
+- chore: add FIXED_30_FRAME_MS const chore: update LOAD_CHUNK_BATCH value
+- refactor: change var types and reserve vector memory
+- chore: add GetBlockFromMapByIndex method
+- refactor: reserve vector memory prevent: uncessary checks fix: remove ambient occlusion in water
+- chore: add chunks counter do debug info refactor: remove unused code, change var types and code improvements
+- chore: add visibleFacesCount prop refactor: remove unused prop
+- feat: add countSetBits method
+- fix: dynamic height and wrong VOID block in caves
+- chore: apply nearvy chunks to player update
+- chore : implements GetLightDataFromMap
+- refactor: reduce number of used variables
+- fix: set a max frame delay to deltatime
+- feat: implements nearByChunks refactor: remane methods eand code improvements
+- refactor: reduce a unecessary query
+- feat: smooth clouds
+- temp: diable v-sync
+- fix: render blinking glich
+- chore: update version
+
+# v0.25.51-pre-alpha
+
+- feat: implement running feat: implements movement by acceleration fix: remove debug stuff
+- fix: cam position
+- fix: player gravity with dynamic fps
+- fix: gravity values
+- fix: sunlight at night
+- fix: gravity values
+- chore: update roadmap
+- fix: water block height
+- chore: update roadmap
+- chore: update version
+- chore: update changelog
+
+# v0.24.45-pre-alpha
+
+- chore: increase flying speed
+- fix: updateStateInWater x and z position feat: play splash sound on enter or exit water
+- fix: prevent to break water
+- chore: add sfx on swimming
+- chore: add liquid sounds repository
+- feat: add underwater overlay and swimming
+- feat: implements water physics
+- chore: fix return type
+- chore: update gravity value
+- chore: update player state in water
+- chore: implements getBlockByWorldPosition
+- Merge branch 'develop' into feature/water-phisycs
+- chore: remove memory leak
+- Merge branch 'develop' into feature/water-phisycs
+- chore: add version to debug info
+- chore: add broken block sounds repo
+- chore: apply custom sounds config by block type
+- chore: replace click by woodclick sound
+- chore: add WoodClick to sfx repository
+- chore: implements SfxConfig repository
+- chore: implements SfxConfigModel
+- chore: remove wet grass sound
+- chore: add changelog
+
+# v0.23.43-pre-alpha
+
+- feat: reduce bgm sound
+- feat: registe new blocks sfx
+- feat: reenable audio system
+- feat: add print method for debug
+- fix: block lights initialization
+- refactor: rename function
+- fix: sunlight light in async chunk loading
+- chore: update roadmap
+- fix: player arm position and scale
+- fix: sun light propagation on remove block
+- fix: water top height
+- fix: rebuild light data after remove a block
+- fix: clean garbage from memory allocation
+- fix: camera direction when get back to main menu
+- chore: update roadmap
+- refactor: saparete update camera functions fix: camera movimentation on main menu
+- fix: previous item selection
+- chore: update roadmap
+- fix: light data initialization
+- fix: increase async light data loadin
+- fix: collision in Y up direction
+- chore: update roadmap
+- chore: update roadmap
+- fix: light block remove when change terrain
+- chore: update roadmap
+- feat: update block light on remove terrain
+- refactor: remove unecessary checks
+- feat: implement getBlockLightValue
+- feat: add three more blocks
+- feat: implement block light system
+- feat: implement chunk light async loading
+- fix: day night cycle
+- chore: apply inline instruction
+- fix: reload chunk light when modify the terrain
+- feat: implements light data reloading
+- refactor: searate data loading in more specific steps for reusability
+- chore: update roadmap
+- chore: update roadmap
+- feat: fix sun light remove when place a block
+- feat: implements sun light remove
+- fix: sun light propagation and flood fill
+- refactor: apply base color to all faces Will be helpful to fix the day night cycle
+- chore: add debug print and var type
+- temp: enable frame limiter
+- fix: spawn area and calc light data when loading save
+- feat: enable basic sun light spread
+- fix: light data access get and set
+- feat: implements light propagation
+- temp: remove unused prop
+- refactor: move light stuff to light manager
+- chore: remove reference
+- fix: update dead zone values to prevent drifting
+- fix: ao values
+- feat: adds player position to debug info
+- fix: vertex order
+- feat: implements ambient occlusion
+- temp: disable dir lights
+- Merge branch 'develop' of github-wellinator:Wellinator/tyracraft into develop
+- fix: memory leak
+- fix: water visibility
+
+# v0.1.7.21-pre-alpha
+
+- Merge pull request #14 from wolfysdl/develop
+- Update README.md with some refactor
+- Merge remote-tracking branch 'upstream/develop' into develop
+- fix: font width
+- fix: typo
+- refactor: remove static text sprite
+- fix: typo and grammatical revision
+- fix: font width
+- fix: prevent performing an unecessary check
+- fix: reapply dynamic delta time
+- chore: update README
+- chore: update README
+- feat: add oak and birch log blocks to inventory
+- fix: coal ore texture mapping
+- fix: song playing while loading the world
+- chore: remoce log
+- fix: memory leak at texture repository
+- feat: implements save slot overlay fix: load selected save null pointer check
+- fix: memory leak when save and quit
+- fix: game crash when try to navigate when there's no save data loaded
+- chore: update roadmap
+- fix: getting randon song index
+- freat: implements dynamic songs loading refactor: moves get song method to sound manager
+- chore: update roadmap
+- refactor: reorder main menu buttons
+- feat: implements quiting and saving dialogs
+- fix: pausing when is at welcome state
+- fix: dialog text position
+- refactor: separate logic to a method
+- chore: update roadmap
+- feat: implements world name validation
+- chore: update roadmap
+- feat: implements welcome screen
+- fix: text position
+- fix: padding calc and char width
+- chore: update roadmap
+- fix: save counter info string position
+- feat: implements confirmation on overwriting save
+- feat: implements CheckIfSaveExist
+- fix: text alignment
+- fix: center dynamic texts
+- feat: implements text alignment
+- feat: fix world input editor
+- feat: implements trim string method
+- refactor: change variables names and composition for reusability
+- fix: save list pagination
+- chore: update roadmap
+- feat: implements directory checking on game init
+- feat: implements save game at in game menu
+- feat: adds name prop to the save file
+- feat: implements tabs transitions
+- refactor: new game to tab style
+- feat: adds name prop
+- feat: adds special valid chars
+- temp: removes origin toggle
+- feat: implements loading from save file
+- feat: implements GetNewGameOptionsFromSaveFile
+- feat: implements load game screen
+- feat: add load game button
+- fix: add null check
+- chore: add TODO
+- fix: wrong block data when parsing on save feat: add camera params to save file
+- chore: update roadmap
+- feat: add save and loading data from mass storage
+- chore: adds gzip-hpp lib for data compression
+- chore: update roadmap
+- chore: update roadmap
+- feat: implements clouds moviment
+- feat: adds static clouds
+- refactor: change pointer to reference
+- Merge branch 'develop' into feature/fast-clouds
+- refactor: call shrink_to_fit after clearing vectors
+- refactor: remove unused method
+- fix: move method call
+- feat: add main args
+- refactor: remove this keyword
+- Merge branch 'merge-code-optimizations-partially' into develop
+- Merge branch 'develop' into merge-code-optimizations-partially
+- fix: item selection
+- refactor: prevent loading the same textures multiple times
+- refactor: turn font manager into a global service
+- fix: prevent infinity loop
+- refactor: remove FontChar object and apply Sprite directly
+- chore: remove done todos
+- refactor: apply the same texture loaded once
+- feat: increasel loading/unloading data speed
+- fix: seed input value initialization
+- refactor: update how params are passed
+- refactor: remove this keyword and turn method to static
+- refactor: apply params by ref rename variables
+- refactor: change variable types
+- refactor: rename varaible change memory allocation
+- refactor: rename param and remove this keyword
+- refactor: chanches memory allocation and rename variable
+- feat: implements clouds manager
+- chore: update roadmap
+- fix: closedir and add missing includes
+- feat: implements draw distance range picker
+- refactor: add draw distance setter
+- chore: add debug info to target
+- refactor: remove chunks from debug info
+- fix: option selection on menu
+- feature: add new buttons sprites and texture selection
+- feat: implements dynamic texture packs loading
+- refactor: organize resource files directories.
+- feat: implements basic json reading
+- feat: add 3lib for parsing JSON
+- feat: implements TexturePackInfoModel
+- feat: implements method to get files from dir
+- Merge branch 'develop' of github-wellinator:Wellinator/tyracraft into develop
+- refactor: seed generation algorithm
+- feat: implements seed input and refactor new world menu
+- Update README.md
+- Update README.md
+- Merge pull request #11 from wolfysdl/develop
+- refactor: new custom world options
+- fix: memory leak on moving fast through the map
+- fix: crash while breaking block
+- chore: update roadmap
+- chore: update roadmap
+- chore: update roadmap
+- chore: update roadmap
+- chore: update roadmap
+- fix: block placement refactor: world modification updates
+- chore: update roadmap
+- fix: world boundaries collision and accuracy on removing blocks
+- fix: randomness of world generation
+- fix: block placement
+- refactor: remove comented code
+- refactor: move terrain manager to world
+- feat: add cross craft world generation
+- Merge branch 'Wellinator:develop' into develop
+- feat: apply fixed delta time
+- feat: add FIXED_FRAME_MS
+- refactor: chunk loading system
+- fix: player arm animation
+- fix: time conversion scale
+- fix: menu skybox
+- fix: transparency order
+- refactor: renameINVENTORY_SIZE to HOT_INVENTORY_SIZE
+- fix: block rendering order (tranparency fix)
+- chore: update roadmap
+- fix: remove duplicated inventory item
+- fix: reference to inventory index
+- chore: uppdate roadmap
+- fix: player keeps walking when the inventory is opened
+- feat: implements inventory item selection
+- temp: fix inventory item id
+- feat: increase hot inventory size
+- fix: inventory destruction and memory leak
+- fix: command to label
+- feat: implements invetory navigation
+- refactor: move terrain manager input commands to game play state
+- refactor: code style and remove commented code
+- refactor: move player input commands to game play state
+- feat: creates inventory entity
+- fix: variable type
+- refactor: remove unused variables and commented code
+- refactor: sfx sound system
+- fix: player collision at vertical axis
+- temp: remove unused debug info
+- fix: terrain modification updates
+- feat: sort chunk loading by priority
+- fix: limit updates to every 5 frames
+- feat: implements async chunk loading
+- fix: menu skybox clipping
+- fix: player aniation on stop breaking a block
+- fix: remove unecessary checks
+- fix: walking animation state
+- fix: moving state control
+- chore: add is_moving stato to debug info
+- refactor: animation state control
+- refactor: move ticks update to PlayState, add prefix to global variable
+- chore: update roadmap
+- fix: face visibility through transparent blocks
+- chore: update roadmap
+- fix: time scale conversion
+- chore: update roadmap
+- fix: crash when loading a new creative song
+- chore: update roadmap
+- refactor: move creative audio listener
+- chore: update roadmap
+- fix: day night ambient light and sky color
+- feat: add ticks to debug info
+- fix: sky color transitions
+- fix: real time to tick conversion
+- refactor: apply tick manager
+- feat: creates global tick manager
+- feat: apply basic day cycle to world lighting
+- feat: implements day night cycle manager
+- feat: add dynamic light
+- fix: bottom face visibility
+- refactor: prepare for fog per vertex
+- refactor: apply faster math implementation
+- feat: implements up mapping per block type
+- feat: simulate static light
+- temp: increase draw distance
+- Delete Makefile.pref
+- refactor: remove duplicated code chore: add TODOs
+- feat: add faces index methods
+- fix: bottom face check
+- fix: visible face calc refactor: improves block check algorithm
+- feat: implements hidden faces culling feat: add face color to cube (debug stuff)
+- refactor: initiate render with manual mode
+- feat: implements custom player render pipeline
+- refactor: redude some loops
+- temp: disable log to file
+- feat: implements frustum culling on chunks bboxes
+- refactor: remove global variable noise
+- temp: enable log file
+- feat: filter blocks in broad phase
+- feat: add option to print debug info to log
+- refactor: chunk visibility checks
+- refactor: isBlockHidden params
+- refactor: remove vector iteration on load info
+- feat: add block debug info
+- fix: update isBreaking variable
+- feat: add player state debug info
+- refactor: vector to array
+- feat: add block info to debugger utillity
+- fix: width scale offset
+- Merge branch 'develop' of github-wellinator:Wellinator/tyracraft into develop
+- refactor: block type enum
+- refactor: fix file name
+- Merge pull request #10 from wolfysdl/patch-2
+- Update README.md
+- Update README.md
+- feat: implements line breaking
+- refactor: variables initialization and types
+- fix: prevent breaking bedblock and memory error
+- Merge branch 'master' into develop
+- fix: delete unused var after generating terrain remove commented code
+- feat: load all extended ASCII chars
+- refactor: move files and remove log
+- chore: updates roadmap
+- reafactor: animation state control
+- temp: load usb drive
+- feat(temp): implements item switching
+- chore: updates roadmap
+- temp: increase breaking time
+- fix: ajust flying speed
+- chore: updates roadmap
+- feat: add birch tree
+- fix: flying speed
+- refactor: replace params by model
+- fix: render initialization
+- refactor: replace pointers by engine ref at context feat: implements debug stuff at gameplay
+- fix: memory leak, destroy manual pointer
+- chore: updates roadmap
+- fix: jump height in low fps
+- feat: implements vertival (up direction) collision
+- chore: updates roadmap
+- refactor: apply font support
+- refactor: remove unused variable
+- feat: add basic font support
+- feat: add caves options to menu
+- refactor: caves generation
+- fix: compilation warnings
+- feat: add more block info
+- fix: input handle at menu and creative game play
+- refactor: bool types
+- chore: updates roadmap
+- fix: player arm position on toggle flaying
+- feat: implements flaying on creative mode
+- feat: improves terrain height scales
+- chore: updates roadmap
+- chore: updates roadmap
+- chore: updates roadmap
+- fix: ammount of chunks to load
+- chore: updates roadmap
+- refactor: rename chunk prop to semantic name fix: chunk bbox offset fix: chunk updates on terrain modification
+- chore: updates roadmap
+- fix: prevent putting block at player position
+- chore: updates roadmap
+- fix: cam getting into objects
+- chore: updates roadmap
+- refactor: change methods order and add TODOs
+- refactor: code optimization
+- fix: memory access when draw target block
+- fix: player falling after modiffying world
+- feat: implements basic chunk culling
+- feat: improves target block detection and some code optimizations
+- refactor: remove unused properties
+- refactor: remove unused update for fps improvement
+- chore: updates roadmap
+- chore: updates roadmap
+- fix: bug on two blocks height collision detection There was a wrong value at ray origin calculation
+- fix: check nullptrs
+- feat: add some thread switch on render phase
+- featL add horizontal check to broad phase
+- fix: memory leak on destroy terrain entity
+- fix: some memory leaks
+- fix: free used memory on destroy entities
+- fix: memory leak, unload textures
+- feat: implements game menu interface
+- feat: implement pause state
+- refactor: remove non implemented method controlGameMode
+- refactor: create renderCreativeUi method
+- refactor: render creative UI sprites only
+- refactor: fragment ui render method to more specifc ones
+- refactor: move render controller to state game play class
+- refactor: rename state property to a semantic name
+- refactor: mode in game logic control to state
+- refactor: remove unused code and add deltatime to update method
+- refactor: move creative audio listener to creativePlayingState
+- refactor: move code to function handleGameMode
+- feat: implements game play states
+- temp: disable terrain density
+- refactor: seed generation
+- refactor: saparate block texture info from block manager
+- refactor: separate sfx models to BlockSfxBaseRepository
+- refactor: remove unused code feat: implements on walk sfx
+- feat: add SfxStepCategory
+- feat: implements SfxStepCategory
+- refactor: rename methods and separate functions
+- feat: add step category
+- refactor: block sound model
+- refactor: sound register functions
+- fix: terrain seed generation
+- fix: player tunneling on jump
+- refactor: update seed value generation
+- refactor: prettify and replace blocking code
+- feat: set playClick volume
+- fix: player StaticBBox calc
+- fix: leaves sfx
+- feat: add new menu song by lochgames
+- fixL nullptr check
+- fix: replace blocking code by warning
+- fix: EE PC error
+- fix: NewGameOptions struct to class
+- refactor: rename variable
+- fix: apply value checks
+- temp: disable player sfx
+- refactor: remove unused code
+- fix: nullptr check and limit channels on play sfx
+- fix: cpp compiler warnings
+- chore: remove printf
+- feat: implements basic game sfx
+- chore: add todo
+- feat: add block sounds to blcok_manager
+- refactor: add blockType to SfxBlockModel and updates constructor
+- feat: implements SfxDigCategory
+- feat: add SfxDigCategory
+- feat: update SoundFX
+- feat: add Dig category
+- feat: adds 'none' into SoundFX
+- feat: implements SfxBlockModel
+- chore: ignore res folder
+- feat: implements in game music
+- refactor: removes unused prop
+- fix: remove stop song method call
+- feat: implements CreativeAudioListener
+- chore: ignore res directory
+- refactor: remove multiple method declaration
+- refactor: play sounds on actions btn only
+- feat: implements click sfx on press button in menu
+- chore: add tyra assert method
+- fix: categories initialization
+- feat: implements click sfx on press button in menu
+- refactor: remove unused code
+- feat: implements playClickSound
+- feat: add SoundManager to menu context
+- feat: implements playSfx
+- feat: implements getter methods
+- feat: implements getSound method
+- feat: implements audio entities
+- refactor: remove unused methods
+- chore: add click sfx resource
+- feat: play menu song randomly
+- feat: add more menu soungs
+- feat: implements sound manager
+- chore: update roadmap file
+- refactor: remove unecessary call and variable type
+- feat: implements chunk load/unload controller per call
+- chore: add some debugging stuff
+- refactor: remove unused properties
+- refactor: remove unecessary checks
+- fix: memory leak on destroy chunk
+- feat: implements player arm and animations
+- fix: wrong texture name
+- fix: update model player path
+- refactor: realocate player model files
+- remove: unsued models
+- chore: add player arm model assets
+- temp: disable tool render
+- fix: player jump height
+- fix: remove player model render when it is first person cam
+- refactor: stop drawing player hitbox
+- fix: rotated player hitbox and scale
+- fix: model animation and Y origin
+- feat: implements target bbox rendering
+- fix: player model origin position at Y axis
+- fix: prevent placing block at player position
+- refactor: move variablas declarations
+- refactor: improves position calculation
+- refactor: rename staticBBox to hitbox
+- fix: player hitbox position and scale
+- fix: walking animation sequences
+- feat: implements breaking animation
+- feat: add new breaking block animations frames
+- feat: implements player movment sensibility
+- fix: player walk animation
+- feat: apply smoother chunk loading
+- refactor: implements CamType enum fix: first person camera position
+- fix: player collision on animate and player height
+- Merge branch 'feature/tools' into feature/player
+- feat: basic render player
+- fix: loading bar full length
+- fix: uncomment render ui
+- fix: tool mesh loading
+- feat: add axe tool
+- refactor: rename ITEM_TYPES to ItemId
+- fix: add stone material
+- feat: add axe tool class
+- feat: add base Tool class
+- feat: add ItemsMaterials
+- chore: add axe assets
+- feat(WIP): render player
+- refactor: load player mesh
+- refactor: update player assets
+- feat: add WIP tag to enable water option
+- feat: implements world options
+- chore: update roadmap
+- feat: apply ScreenNewGame
+- feat: implements ScreenNewGame
+- fix: multiples definitions of struct
+- feat: add NewGameOptions
+- feat: add assets from new game screen
+- feat: implement screen about
+- feat: add about screen assets
+- feat: implements HotToPlay screen
+- fix: circular dependency
+- fix: how to play sprite size
+- refactor: remove unused code
+- feat: implements menu state and main screen
+- feat: add menu options assets
+- Merge branch 'feature/state-manager' into develop
+- chore: remove printf
+- fix: audio methods order
+- fix: destructor problem in abstract class
+- fix: menu skybox rotation and menu song
+- refactor: move entities from context to state_game_play
+- fix: Tyra update 2.1 - braking changes
+- feat: adds MAX_FRAME_MS constant
+- temp: identifying errors
+- temp: diable log to file and USB
+- fix: audio reference to context
+- temp: fix break changes from Tyra V2
+- chore: remove prints
+- feat: add deltaTime to update method
+- feat: implements state transition to game play
+- feat: implements game play state
+- chore: add TODO
+- feat: implements loading game state
+- refactor: loading screen to state loading game
+- refactor: move camera ref to state manager constructor
+- feat: implements transition from splash to menu
+- refactor: change menu manager to game state
+- refactor: encapsulate state and move camera ref to constructor
+- refactor: implements context into state manager
+- feat: implements context class
+- Merge branch 'develop' into feature/state-manager
+- feat: add async load chunk (one per frame)
+- refactor(WIP): splash screen state
+- Merge branch 'develop' into feature/state-manager
+- fix: lift value
+- fix: null pointers references in vectors
+- refactor: chunk loading controller
+- temp: show fps
+- chore: add fixme
+- feat: implement async chunk loading
+- chore: update gitignore
+- feat: implements fake async chunk unloading
+- temp: display free memory
+- temp: disable water generation
+- feat: add ui btn sprites
+- feat: add about background sprite
+- feat: add how to play sprite
+- feat: enable usb drivers loading
+- feix: breaking changes from tyra update
+- feat: add StateSplashScreen
+- feat: add game state base
+- chore: remove todo
+- chore: add august roadmap
+- feat: implements async chunk unloading
+- temp: log fps in the console
+- feat: implements block breaking overlay
+- refactor: remove unused variables
+- fix: overlay texture transparency
+- remove: unnecessary consts
+- feat: implements block removing timeout
+- feat: implements getBlockBreakingTime
+- feat: register block damage
+- fix: BLOCK_DAMAGE_100
+- feat: add BLOCK_DAMAGE ids
+- feat: implements terrain height luminosity
+- feat: implements fake async chunk loading
+- temp: disable updateBlocks
+- fix: block color after highlight
+- feat: implements isChunkVisible
+- fix: unnecessary chunk reloading
+- refactor: improves tree shape algorithm
+- chore: fix readme
+- fix: oak leaves texture
+- chore: add fixme
+- temp: remove frustum check
+- fix: mcPip model matrix
+- feat: limit checks by frame counter
+- feat(WIP): chunk culling
+- fat: create chunck bbox
+- fix: breaking changes from tyraV2 update
+- fix: dynamic chunk loading
+- fix: OVERWORLD size
+- feat: implements basic chunck management
+- refactor: move block manager to world class
+- feat: implements basic chunck manager
+- refactor: spaw area deffinition to world class
+- feat: add multiples chuncks
+- feat: add chunck info constants
+- fix: water generation
+- fix: gravity control
+- refactor: gravity system with terrain height
+- refactor: get next position; fix: player sliding;
+- feat: implements watter generation
+- feat: implements fraction movements and collision response
+- feat: implements GetNormalFromHitPosition
+- fix: block placement direction
+- refactor: rename method and add movement check
+- fix: horizontal collision detection
+- feat: implements Minkowski Sum algorithm
+- temp: debug stuff
+- refactor: remove unused variables
+- fix target block detection
+- fix: apply default texture
+- feat: add debug mode textures
+- feat: implements custom Raycast on utils
+- fix: unecessary checks were stealing FPS
+- refactor: add some checks to prevent unecessary updates
+- feat: add cam lookAt position check
+- fix: memory leak
+- feat: apply frustum cull on target block detection
+- refact: migrate collision detection system
+- fix: texture offset mapping
+- temp: disable blocks updates
+- fix: enable rand seed and block color refactor: remove unused code
+- refactor: migrate block render to MinecraftPipeline
+- temp: reset block matrices
+- refactor: changes method name getBlockTypeByOffset
+- temp: increase chunck size
+- fix: selected slot position
+- fix: sprites positions
+- fix: move ambient light control to world class
+- feat: implements loading screen
+- chore: fix loading text sprite
+- feat: implements loading screen
+- fix: skybox mesh optimization
+- refactor: replace menu assets
+- refactor: splash sprites grid to single texture
+- chore: update splash to single textures
+- fix: slot dynamic width
+- fix: skybox scale and position
+- chore: increase skybox resolution
+- fix: apply dynamic HUD scale and position
+- chire: fix sprite position
+- fix: hud sprites scale
+- fix: sizes and positions on UI
+- chore: resize sprites
+- fix: menu sprites refactor
+- chore: add audio module file
+- fix: sprites size to log(2)
+- fix: unload textures on destroy menu
+- refact: replace static background by stybox
+- chore: fix skybox assets
+- fix: splash screen tile positions
+- temp: set block position
+- chore: update blocks textures
+- chore: update splash screen sprites size
+- temp: show free ram
+- fix: moemory leak on clean chunck
+- refactor: update block position to get set method
+- feat: add m4x4 at blocks
+- chore: update color for test
+- fix: sprites height
+- Merge pull request #5 from wolfysdl/patch-1
+- fix: update pipeline
+- fix: importing static_pipeline
+- refactor: use pointer insted saving ref
+- fix: add inline type
+- fix: nullptr access
+- fix: unload textures on destroy
+- feat: implements player mesh loading
+- chore: change player texture to png
+- chore: change sprite bpp
+- fix: sprite height and re-add background
+- fix: sprite height
+- refactor: apply const to params
+- refactor: remove unused methods
+- feat: apply mcPip to chunck render; refact: changes Block\*_ to Block_ at chunck;
+- fix: texture_atlas loading
+- remove: delete individual textures
+- refactor: chunck renderer and updates to use Tyra:MinecraftPipeline
+- feat: implements getBlocksTexture
+- refactor: update block constructor
+- refactor: BlockTexOffset to BlockInfo
+- chore: add blocks texture atlas
+- refactor: BlockItem to BlockTexOffset
+- fix: xp_bar_full file path
+- fix: updates menu pad controls
+- chore: change bpp to 32bits
+- fix: render splash screen
+- chore: remove printf
+- Merge pull request #6 from h4570/feature/migration-to-tyrav2
+- trap exception patch
+- temp: remove code to test Tyra renderer
+- refactor: replace Start class by TyraCraftGame class
+- refactor: rename dir objects to entities
+- chore: fix imports and types from Tyrav2
+- refactor: update includes and struct to tyrav2
+- chore: add vscode config by h4570
+- Merge branch 'master' into develop
+- chore: remove Zone.Identifier fiels
+- feat: increase chunck size and anable fake FOG
+- refactor: apply manhattan distance to increase performace
+- fix: remove print function and disable v-sync
+- refactor: improve update pipeline with pre loaded data
+- Merge branch 'develop'
+- refactor: remove unsused code
+- fix: grass block vertex
+- feat: implements basic trees generation
+- fix: oak log texture order
+- fix: oak lieves material texture
+- feat: add OAK leaves and log blocks
+- feat: enable ramdon seeds
+- fix: reduce chunck and encrease jump height
+- fix: increase lift
+- fix: set all dealocated pointers to NULL
+- fix: prevent putting block at player position
+- refactor: collision system to prevent tunneling
+- chore: add TODO with pseudo algorithm to prevent tunneling
+- refactor: changes forces values to 3d vectors
+- fix: ajust gravity and lift values
+- fix: null blocks pointers references on chunck update.
+- fix: apply NULL check
+- refactor: improvements on updates cycles
+- feat: implements time based movements
+- feat: implements gravity based on delta time
+- feat: increase gravity value
+- chore: update makefile
+- refactor: player collision system
+- feat: add collision manger
+- feat: adds world edge vectors
+- fix: player position when is on a block stack
+- feat: increase gravity value
+- feat: implements basic LOD
+- fix: increase lift jumping
+- refactor: uses math methods from tyra engine
+- fix: block size
+- chore: readd --strip-all to makefile
+- fix: visibility of a block behind a glass block
+- fix: block id if glass item
+- feat: create new items
+- feat: add items assets
+- feat: clear meshes and blocksItems on destroy BlockManager
+- feat: add newers blocks meshs and refectore getMeshByBlockType;
+- feat: add blocks id
+- fix: apply ITEM_TYPES enum
+- feat: adds more blocks textures and meshes
+- feat: adds empty slot item
+- feat: add stripped_oak block
+- feat: put block from inventory
+- refactor: rename function
+- refactor: prevent unecessary updates on change slot
+- refactor: prevent unecessary updates
+- feat: implements dynamic inventory rendering
+- feat: adds ItemRepository and Item
+- feat: implements inventory selection
+- temp: allow random seed
+- feat: implements terrain height scale
+- remove: external module, it's now embed.
+- fix: grid lines on splash screen
+- fix: move back to old renderer method to avoid freezing
+- refactor: collision check to improve accuracy and performance
+- refactor: improves chunck generation
+- temp: changes the chunck size
+- refactor: remove unecessary verification on isBlockHidden
+- refactor: world edges verification
+- feat: adds CHUNCK_DISTANCE constant
+- refactor: improves sanitize method
+- feat: implements chunck cliping
+- feat: generate blocks data for bioms
+- feat: increase world height
+- refactor: improves trrain generation
+- feat: adds biomes params
+- feat: adds third lib
+- temp: disable FOG for color issue on real console
+- fix: initial position and reset player position
+- fix: high image alpha
+- fix: player spawn area
+- Merge branch 'develop' into feature/terrain-generation
+- feat: implements in game hud
+- feat: add hud assets
+- refactor: updates crosshair sprite
+- refactor: change makefile preferences source
+- fix: define spawn area
+- temp: allow symbols in the bin
+- refactor: reduce looping on update chunck
+- Update README.md
+- refactor: update target block and improvements
+- fix: player height and gravity
+- refactor: update terrain generation params
+- feat: implements spawn area
+- temp: change chunck size
+- fix: decrease debounce for game mode change
+- temp: add todo
+- feat: implements basic game mode control
+- feat: add gravity and basic collision
+- refactor: improves block placement accuracy and performace
+- refactor: improve block removement
+- fix: FOG calculation
+- refactor: improvees remove block method
+- refactor: reimplement chunck with blocks with pre calculated indexes
+- temp: hide player
+- feat: add block util properties
+- refactor: move player mesh control
+- feat: implements chunck cache
+- refactor: change noise lib
+- refactor: improve rendering and fix memory leak on rebuild chunck
+- fix: FOG wiht multiples materials and var type
+- fix: texture link when multiples mesh materials
+- fix: grass block glich
+- refactor: improve block placement
+- refactor: improve block removement
+- chore: fix some stuff on README.md
+- fix: ray direction
+- fix: terrain generation rules
+- fix: flat terrain generation
+- feat: implements basic remove and place block
+- fix: constants values
+- fix: constants values
+- refactor: rename method removeBlock to removeBlockAtIndex
+- feat: add control handler and block removement
+- fix: update md loader to new tyra version
+- chore: remove TODO and FIXME
+- fix: menu audio
+- fix: remove print
+- feat: implements skybox menu
+- fix: imports and camera injection
+- refactor: move setBgColorAndAmbientColor
+- refactor: world dependency injection
+- feat: implements pad control at menu
+- feat: add select label
+- feat: add splash scrren and menu
+- feat: add cross button option
+- fix: update title assets
+- fix: title assets glich
+- feat: implements basic menu
+- feat: add basic menu assets
+- chore: rename readme file
+- Update readme.md
+- Create LICENSE
+- feat: updates readme
+- feat: add slot sprites in menu
+- refactor: remove state from splash
+- fix: status update after splash screen
+- feat: add tyra splash screen
+- feat: add tyra splash screen assets
+- refactor: move splash screen to state manager
+- refactor: dependency injection organization
+- feat: add tyracraft splash screen assets
+- refactor: separate functions calls
+- feat: add block properties
+- fix: chunck renderer call
+- feat: implements basic block intersection
+- feat: adds MAX_RANGE_PICKER constant
+- fix: reduce memory usage
+- refactor: prettify
+- Merge branch 'master' into feature/terrain-generation
+- Merge branch 'master' of github.com:Wellinator/tyracraft
+- Merge branch 'master' of github.com:Wellinator/tyracraft
+- fix: updates TYRA_DIR from PATH
+- chore: add makefile.pref
+- Merge pull request #2 from wolfysdl/fix/Makefile+minnor-things
+- Fix the bin folder on the makefile and some refactor
+- chore: sync assets on rebuild
+- chore: add sync-assets acript
+- chore: add assets
+- chore: add basic README
+- refactor: move block controllers to block manager
+- feat: implements fog by distance
+- feat: increase chunck size
+- feat: iplements FOG formulars
+- feat: increase player speed
+- fix: clear temp variable to prevent memory leak
+- feat: changes chunck render limit
+- fix: ajust simplex noise values and sacale
+- feat: implements UI and add crosshair
+- feat: reduce world size
+- feat: implements first person camera mode
+- fix: inverted player rotation
+- feat: implements angle to radian conversion method
+- temp: prevent rendering player mesh in FPS mode
+- feat: adds cam type constat
+- refactor: replace Node by Block
+- fix: remove PRINT_LOG
+- feat: implements random world generation by seed
+- fix: change the checking order to improve chunck building
+- feat: implements chunck optimization and adds water block
+- refactor: tarrain generation and chunck building
+- fix: checking order
+- fix: momory leak on clear chunck
+- feat: add more blocks
+- chore: update gitignore
+- feat: improve chunck render and terrain generation
+- feat: implements basic procedural terrain generatrion
+- chore: remove TODOs
+- Merge branch 'dynamic-chunck-render' into master
+- feat: improve chunk update
+- fix: set player to the center of the world
+- refactor: change class restrictions
+- fix: remove printf
+- feat: center the World and Chunck
+- fix: resize skybox
+- feat: update chunck by player position
+- feat: implements basic terrain optimization
+- feat: apply block drawing control
+- feat: increase chunck size
+- feat: implements chunck render
+- delete: remove map class
+- feat: configure base block
+- temp: first render of chunk with glich
+- feat: implements terrain manager in world class
+- refactor: get variables from constants
+- :refactor: modify TerrainGenerator to TerrainManager
+- feat: creates constants file
+- feat: create world base
+- fix: replace player after resize chunck
+- feat: implements block clip and resize chunck
+- feat: add y axis to chunck
+- temp: disable player render
+- fix: apply player moves correction
+- feat: load skybox
+- fix: reduce chunck size
+- feat: update player position
+- refeactor: update methods signatures
+- feat: implements basic chunck
+- temp: load 2 block hard coded
+- temp: disable gavity for test
+- fix: bug fixes
+- feat: add new fiels to compile
+- feat: init player
+- feat: implements basic player
+- feat: implements util
+- temp: changes chunck to one layer
+- fix: update speed value and disable back face culling
+- fix: change initial position
+- fix: change chunck size to 10
+- chore: initial commit

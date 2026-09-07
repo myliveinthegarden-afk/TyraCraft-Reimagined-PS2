@@ -1,0 +1,139 @@
+############ TyraCraft 0.1.3 Roadmap ############
+
+* Features for pre-alpha release (v0.1):
+    ✅ -> PLayer Hand;
+        ✅ -> Walking and Hiting Animation;
+    ❌ -> Tool (Pickaxe) (WIP);
+    ✅ -> Implement cam sensitivity;
+    ✅ -> In game song manger;
+        ✅ -> Sound FX and background music;
+    ❌ -> Basic ingame menu for block selection;
+    ✅ -> Add "About" in main menu;
+    ✅ -> Add "How to play" in main menu;
+    ✅ -> Add "Create World" screen;
+    ✅ -> In game MENU;
+    ✅ -> Flying in creative mode;
+    ✅ -> Added basic font support;
+    ✅ -> Added birch tree;
+
+* Bug fixes for pre-alpha release (v0.1):
+    ✅ -> Player collision detection on two blocks height (Fixed wrong Ray origin calculation);
+    ✅ -> Fix chunk reloading when modifying world;
+    ✅ -> Prevent camera to get into objects when it's in first person view;
+    ✅ -> Prevent place block at player position;
+    ✅ -> Vertical collision when the player is jumping;
+    ✅ -> Jump height on low FPS;
+    ✅ -> Fix ammount of chunks to load;
+    ✅ -> Ajust breaking block time by game mode;
+    ✅ -> Ajust flying speed;
+    🔲 -> Real PS2:
+        🔲 -> Fix walking state;
+        🔲 -> Fix amimations state;
+        🔲 -> Blocks textures ID;
+
+
+############ TyraCraft 0.1.4 Roadmap ############
+
+* Features for pre-alpha release (v0.1.4):
+    ⚠️ -> Tool (Pickaxe) (WIP);
+    ✅ -> Fix blocks visibility on modify world;
+    ✅ -> Update world options menu;
+    ✅ -> Basic ingame menu for block selection;
+    ✅ -> Implemented tyra manual render mode;
+    ✅ -> BLocks hidden faces culling;
+    ✅ -> Basic ambient and directional lighting effets;
+    ✅ -> Basic Day/Night cycle;
+    ✅ -> Adde tick manager (visible in debug info);
+    ⛔ -> Add World size options (Discontinued);
+    ✅ -> Add input for seed;
+    ✅ -> Add ingame options: Draw distance;
+    ✅ -> Add support for custom textures;
+    ⚠️ -> Add particles system;
+    ⚠️ -> Add save support;
+
+* Bug fixes for pre-alpha release (v0.1.4):
+    ✅ -> Game chashes when creative sound finish;
+    ✅ -> Fixed time scale conversion;
+    ✅ -> Leaves neghboors blocks visibility;
+    ✅ -> Refactor block visibility/transparency/solid check system;
+    ✅ -> Fix block faces transparency (Render transaparent block after solid ones);
+    ✅ -> Duplicated inventory item;
+    ✅ -> Invalid reference to inventory index;
+    ✅ -> Fix player keeps walking when the inventory is opened;
+    🔲 -> Real PS2:
+        ✅ -> Fix walking state;
+        ✅ -> Fix amimations state;
+        ✅ -> Blocks textures ID (Kinda cache at rendering multiple blocks);
+        ⚠️ -> Fix audio FX;
+
+############ TyraCraft 0.1.5 Roadmap ############
+
+* Features for pre-alpha release (v0.1.5):
+    ✅ -> Add basic sky texture;
+    ✅ -> Dynamic songs loading;
+    ⚠️ -> Add particles system;
+    🔲 -> Tool (Pickaxe) (WIP);
+    ✅ -> Add save support;
+    🔲 -> Add auto save feature;
+    ✅ -> Add "Quit Without Save" and "Save and Quit" at in game menu;
+    ✅ -> Add warning message on start game;
+    🔲 -> Popup messages system;
+    ✅ -> Dialog messages;
+        ✅ -> Message if exists any world with the same name before create a new game;
+        ✅ -> Confirm before override an existing save;
+        ✅ -> Confirm before exit without save;
+
+* Bug fixes for pre-alpha release (v0.1.5):
+    🔲 -> Real PS2:
+        ⚠️ -> Fix audio FX;
+
+############ TyraCraft 0.2.x Roadmap ############
+
+* Features for pre-alpha release (v0.2.x):
+    ✅ -> Create a global settings service;
+        ✅ -> Add V-sync to options;
+        ✅ -> Add L & R Sticks deatzone values;
+        ✅ -> Add change language option;
+    🔲 -> Tool (Pickaxe) (WIP);
+    ⛔ -> Add auto save feature;
+    🔲 -> Popup messages system;
+    ✅ -> Multi language support;
+    ✅ -> Implement block hardness;
+    ✅ -> Add particles system;
+    ✅ -> Sun light system;
+    ✅ -> Block light system;
+    ✅ -> Running;
+    ✅ -> pre-calculated ambient occlusion;
+    ✅ -> Basic vegetation;
+    ✅ -> Sun and Moon;
+    ✅ -> Third Person Cam:
+        ✅ -> Implements Third Person render;
+        ✅ -> Fix inverted Y (pitch) direction;
+        ✅ -> Fix cam position in first person mode;
+        ✅ -> Added basic camera collision;
+    🔲 -> Implement water phisycs:
+        ✅ -> Gravity:
+        🔲 -> Water flood fill:
+
+* Bug fixes for pre-alpha release (v0.2.x):
+    ✅ -> Player arm position and scale;
+    ✅ -> No sun light on async loaded chunks;
+    ✅ -> Fix block light after loading save:
+    ✅ -> Fix water block top height;
+    ✅ -> Remove camera rotation at main memu:
+    ✅ -> Fix height collision when jumping:
+    ✅ -> Fix block light remove:
+    ✅ -> Fix light data when changes world save:
+    ✅ -> Fix Day/Night cycle:
+    ✅ -> Water:
+        ✅ -> Update sun light when remove block under water;
+        ✅ -> Increase sunlight value at night;
+    ✅ -> Update light in moded chunks:
+        ✅ -> Increase light update speed (maybe two chunks per frame):
+    ✅ -> Real PS2:
+        ✅ -> Fix audio FX;
+    ✅ -> Destroy plant when the bottom block is destroyed;
+    ✅ -> Apply light intensity to particles;
+    ✅ -> Fix clouds color at night:
+    ✅ -> Fix game crash when trying to save with max draw distance;
+    ✅ -> Fix player mesh illuminaton at night;
